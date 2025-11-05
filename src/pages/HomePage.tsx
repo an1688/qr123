@@ -375,7 +375,7 @@ export default function HomePage() {
                   </p>
                   <p className="text-gray-300 leading-relaxed">
                     또한 이중번호 시스템으로 인해 개인 연락처를 보호하면서도 효과적인 커뮤니케이션을 실현할 수 있어, 
-                   骚扰 문제 없이 안전한 주차 관리 서비스를 제공합니다.
+                  骚扰 문제 없이 안전한 주차 관리 서비스를 제공합니다.
                   </p>
                 </div>
               </div>
@@ -481,9 +481,9 @@ export default function HomePage() {
                 </div>
               </div>
               <div className="group relative">
-                <div className="absolute inset-0 bg-gradient-to-br from-info/20 to-blue-500/10 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-500"></div>
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-500/20 to-blue-500/10 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-500"></div>
                 <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6 hover:bg-white/10 transition-all duration-300">
-                  <div className="text-4xl font-bold font-mono text-info mb-2">
+                  <div className="text-4xl font-bold font-mono text-blue-400 mb-2">
                     빠른
                   </div>
                   <div className="text-sm text-gray-300">원클릭 연락</div>
@@ -568,4 +568,5 @@ export default function HomePage() {
         </footer>
       </div>
     </>
+  )
 }
