@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Navigate } from 'react-router-dom'
 import { Phone, Clock, QrCode, PhoneCall, Search, RefreshCw, Filter, Download } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 import { sessionManager } from '../utils/sessionManager'
@@ -20,13 +20,10 @@ interface CallLogData {
 export default function CallLogsPage() {
   const navigate = useNavigate()
   
-  // 认证检查
-  useEffect(() => {
-    if (!sessionManager.isLoggedIn()) {
-      navigate('/admin/login')
-      return
-    }
-  }, [navigate])
+  // 认证检查 - 如果未登录，重定向到登录页面
+  if (!sessionManager.isLoggedIn()) {
+    return <Navigate to="/admin@7@/login" replace />
+  }
   
   const [callLogs, setCallLogs] = useState<CallLogData[]>([])
   const [loading, setLoading] = useState(true)
@@ -93,7 +90,7 @@ export default function CallLogsPage() {
 
       if (error) {
         console.error('数据库查询错误:', error)
-        setError('加载通话记录失败: ' + error.message)
+        setError('通话记录加载失败: ' + error.message)
         return
       }
 
@@ -110,8 +107,8 @@ export default function CallLogsPage() {
       await calculateStats()
 
     } catch (err: any) {
-      console.error('加载通话记录异常:', err)
-      setError('加载通话记录时发生错误: ' + err.message)
+      console.error('通话记录加载异常:', err)
+      setError('通话记录加载时发生错误: ' + err.message)
     } finally {
       setLoading(false)
     }
@@ -139,17 +136,17 @@ export default function CallLogsPage() {
         thisMonth: monthResult.count || 0
       })
     } catch (err) {
-      console.error('计算统计数据失败:', err)
+      console.error('统计数据计算失败:', err)
     }
   }
 
   // 导出通话记录
   const exportCallLogs = () => {
     const csvContent = [
-      ['ID', '通话时间', '呼叫号码', 'IP地址', '二维码代码', '安全代码'],
+      ['ID', '通话时间', '呼叫号码', 'IP地址', 'QR码', '安全码'],
       ...filteredCallLogs.map(log => [
         log.id,
-        new Date(log.called_at).toLocaleString('zh-CN'),
+        new Date(log.called_at).toLocaleString('ko-KR'),
         log.phone_number,
         log.ip_address || '',
         log.qr_code?.code || '',
@@ -185,7 +182,7 @@ export default function CallLogsPage() {
       <div className="min-h-screen bg-surface-near-black flex items-center justify-center">
         <div className="flex items-center gap-3">
           <RefreshCw className="w-6 h-6 text-primary-500 animate-spin" />
-          <span className="text-text-primary">加载通话记录中...</span>
+          <span className="text-text-primary">通话记录加载中...</span>
         </div>
       </div>
     )
@@ -236,7 +233,7 @@ export default function CallLogsPage() {
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-text-secondary" />
             <input
               type="text"
-              placeholder="搜索手机号或二维码..."
+              placeholder="搜索手机号码或QR码..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full pl-10 pr-4 py-2 bg-surface-light-gray border border-white/20 rounded-md text-text-primary placeholder-text-secondary focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
@@ -252,8 +249,8 @@ export default function CallLogsPage() {
           >
             <option value="all">全部时间</option>
             <option value="today">今天</option>
-            <option value="week">最近一周</option>
-            <option value="month">最近一月</option>
+            <option value="week">最近1周</option>
+            <option value="month">最近1个月</option>
           </select>
         </div>
 
@@ -263,7 +260,7 @@ export default function CallLogsPage() {
             <div className="p-8 text-center">
               <PhoneCall className="w-12 h-12 text-text-secondary mx-auto mb-4" />
               <p className="text-text-secondary">
-                {searchTerm || dateFilter !== 'all' ? '没有找到匹配的通话记录' : '暂无通话记录'}
+                {searchTerm || dateFilter !== 'all' ? '未找到匹配的通话记录' : '无通话记录'}
               </p>
             </div>
           ) : (
@@ -274,7 +271,7 @@ export default function CallLogsPage() {
                     <tr>
                       <th className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">通话时间</th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">呼叫号码</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">关联二维码</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">关联QR码</th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">IP地址</th>
                     </tr>
                   </thead>
@@ -288,10 +285,10 @@ export default function CallLogsPage() {
                             </div>
                             <div>
                               <div className="text-text-primary font-medium">
-                                {new Date(log.called_at).toLocaleDateString('zh-CN')}
+                                {new Date(log.called_at).toLocaleDateString('ko-KR')}
                               </div>
                               <div className="text-text-secondary text-sm">
-                                {new Date(log.called_at).toLocaleTimeString('zh-CN')}
+                                {new Date(log.called_at).toLocaleTimeString('ko-KR')}
                               </div>
                             </div>
                           </div>

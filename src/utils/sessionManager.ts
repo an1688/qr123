@@ -30,10 +30,11 @@ class SessionManager {
 
   // 验证用户名和密码
   validateCredentials(username: string, password: string): boolean {
-    const { ADMIN_CONFIG } = require('../config/auth')
+    // 使用环境变量中的配置
+    const adminUsername = import.meta.env.VITE_ADMIN_USERNAME || 'admin'
+    const adminPassword = import.meta.env.VITE_ADMIN_PASSWORD || 'changeme123'
     
-    // 简单验证（生产环境应该使用哈希验证）
-    return username === ADMIN_CONFIG.username && password === ADMIN_CONFIG.password
+    return username === adminUsername && password === adminPassword
   }
 
   // 检查登录尝试次数

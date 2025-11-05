@@ -15,7 +15,7 @@ export default function AdminLoginPage() {
   // 检查是否已登录
   useEffect(() => {
     if (sessionManager.isLoggedIn()) {
-      navigate('/admin/dashboard')
+      navigate('/admin@7@/dashboard')
     }
   }, [navigate])
 
@@ -25,7 +25,7 @@ export default function AdminLoginPage() {
       const remainingTime = sessionManager.getRemainingLockTime()
       if (remainingTime > 0) {
         setLockoutTime(remainingTime)
-        setError(`账户已被锁定，请等待 ${Math.ceil(remainingTime / 60000)} 分钟后重试`)
+        setError(`账户已被锁定。请在 ${Math.ceil(remainingTime / 60000)} 分钟后重试`)
       } else {
         setLockoutTime(0)
       }
@@ -54,19 +54,19 @@ export default function AdminLoginPage() {
       }
 
       if (!validateUsername(username)) {
-        setError('用户名格式不正确（3-50字符，仅支持字母数字下划线）')
+        setError('用户名格式不正确（仅支持3-50个字符，英文、数字和下划线）')
         return
       }
 
       if (!validatePassword(password)) {
-        setError('密码不符合安全要求（至少8位，包含大小写字母、数字和特殊字符）')
+        setError('密码不符合安全要求（至少8个字符，包含大小写字母、数字和特殊字符）')
         return
       }
 
       // 验证凭据
       if (!sessionManager.checkLoginAttempts()) {
         const remainingTime = sessionManager.getRemainingLockTime()
-        setError(`登录尝试次数过多，账户已被锁定 ${Math.ceil(remainingTime / 60000)} 分钟`)
+        setError(`登录尝试次数过多。账户将被锁定 ${Math.ceil(remainingTime / 60000)} 分钟`)
         return
       }
 
@@ -75,7 +75,7 @@ export default function AdminLoginPage() {
       
       if (success) {
         // 登录成功，跳转到管理后台
-        navigate('/admin/dashboard')
+        navigate('/admin@7@/dashboard')
       } else {
         // 登录失败，记录失败次数
         sessionManager.recordLoginFailure()
@@ -84,7 +84,7 @@ export default function AdminLoginPage() {
 
     } catch (error) {
       console.error('登录错误:', error)
-      setError('登录过程中发生错误，请稍后重试')
+      setError('登录过程中发生错误。请稍后重试')
     } finally {
       setIsLoading(false)
     }
@@ -98,7 +98,7 @@ export default function AdminLoginPage() {
             <Lock className="w-8 h-8 text-white" />
           </div>
           <h1 className="text-2xl font-bold text-text-primary mb-2">管理员登录</h1>
-          <p className="text-text-secondary">请输入您的管理员凭据</p>
+          <p className="text-text-secondary">请输入管理员凭据</p>
         </div>
 
         <div className="bg-surface-light-gray rounded-lg p-6 border border-white/10">
@@ -172,7 +172,7 @@ export default function AdminLoginPage() {
 
           <div className="mt-6 pt-4 border-t border-white/10">
             <p className="text-xs text-text-secondary text-center">
-              安全提示：请使用强密码并定期更换
+              安全提示：使用强密码并定期更换
             </p>
           </div>
         </div>

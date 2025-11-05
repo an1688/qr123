@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Navigate } from 'react-router-dom'
 import { QrCode, Edit, Plus, Search, RefreshCw, Download, Eye, X, CheckSquare, Square, Archive, Trash2 } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 import { sessionManager } from '../utils/sessionManager'
@@ -21,13 +21,7 @@ interface QRCodeData {
 export default function QRManagePage() {
   const navigate = useNavigate()
   
-  // 认证检查
-  useEffect(() => {
-    if (!sessionManager.isLoggedIn()) {
-      navigate('/admin/login')
-      return
-    }
-  }, [navigate])
+
   
   const [qrCodes, setQrCodes] = useState<QRCodeData[]>([])
   const [qrLoading, setQrLoading] = useState(true)
@@ -50,7 +44,7 @@ export default function QRManagePage() {
   const [editingQR, setEditingQR] = useState<QRCodeData | null>(null)
   const [editForm, setEditForm] = useState({ code: '', secure_code: '', status: 'unassigned' })
 
-  // 加载二维码数据
+  // 加载QR代码数据
   const loadQRCodes = async () => {
     try {
       setQrLoading(true)
@@ -72,8 +66,8 @@ export default function QRManagePage() {
         .limit(50000)  // 设置较大的限制确保加载所有数据
 
       if (error) {
-        console.error('加载二维码数据错误:', error)
-        setQrError('加载二维码数据失败: ' + error.message)
+        console.error('QR代码数据加载错误:', error)
+        setQrError('QR代码数据加载失败: ' + error.message)
         return
       }
 
@@ -93,8 +87,8 @@ export default function QRManagePage() {
       setQrStats({ total, assigned, unassigned })
 
     } catch (err: any) {
-      console.error('加载二维码数据异常:', err)
-      setQrError('加载二维码数据时发生错误: ' + err.message)
+      console.error('QR代码数据加载异常:', err)
+      setQrError('QR代码数据加载过程中发生错误: ' + err.message)
     } finally {
       setQrLoading(false)
     }
@@ -104,10 +98,10 @@ export default function QRManagePage() {
     loadQRCodes()
   }, [])
 
-  // 生成二维码图片
+  // 生成QR代码图像
   const generateQRCode = async (code: string, secureCode?: string) => {
     try {
-      // 构建完整的URL，扫码后能直接跳转到绑定页面
+      // 构成完整URL，扫描后可直接跳转到绑定页面
       const baseUrl = window.location.origin
       const identifier = secureCode || code
       const qrContent = `${baseUrl}/bind/${identifier}`
@@ -122,7 +116,7 @@ export default function QRManagePage() {
       })
       return qrDataUrl
     } catch (error) {
-      console.error('生成二维码失败:', error)
+      console.error('QR代码生成失败:', error)
       return null
     }
   }
@@ -147,10 +141,10 @@ export default function QRManagePage() {
     }
   }
 
-  // 批量下载选中的二维码
+  // 批量下载选中的QR代码
   const handleBatchDownload = async () => {
     if (selectedQRs.size === 0) {
-      alert('请先选择要下载的二维码')
+      alert('请先选择要下载的QR代码')
       return
     }
 
@@ -159,11 +153,11 @@ export default function QRManagePage() {
       const zip = new JSZip()
       const selectedQRData = filteredQRCodes.filter(qr => selectedQRs.has(qr.id))
       
-      // 为每个选中的二维码生成图片并添加到zip
+      // 为每个选中的QR代码生成图像并添加到zip中
       for (const qr of selectedQRData) {
         const qrImageUrl = await generateQRCode(qr.code, qr.secure_code || undefined)
         if (qrImageUrl) {
-          // 将base64图片转换为blob
+          // base64图像转换为blob
           const response = await fetch(qrImageUrl)
           const blob = await response.blob()
           const filename = `qrcode-${qr.code}.png`
@@ -180,7 +174,7 @@ export default function QRManagePage() {
       link.click()
       URL.revokeObjectURL(url)
 
-      alert(`成功下载 ${selectedQRData.length} 个二维码！`)
+      alert(`成功下载了 ${selectedQRData.length} 个QR代码！`)
       setSelectedQRs(new Set())
     } catch (error) {
       console.error('批量下载失败:', error)
@@ -190,14 +184,14 @@ export default function QRManagePage() {
     }
   }
 
-  // 处理二维码预览
+  // 处理QR代码预览
   const handlePreviewQR = async (qr: QRCodeData) => {
     setPreviewQR(qr)
     const imageUrl = await generateQRCode(qr.code, qr.secure_code || undefined)
     setQrImageUrl(imageUrl || '')
   }
 
-  // 处理编辑二维码
+  // 处理QR代码编辑
   const handleEditQR = (qr: QRCodeData) => {
     setEditingQR(qr)
     setEditForm({
@@ -207,7 +201,7 @@ export default function QRManagePage() {
     })
   }
 
-  // 保存编辑的二维码
+  // 保存编辑的QR代码
   const handleSaveEdit = async () => {
     if (!editingQR) return
 
@@ -222,7 +216,7 @@ export default function QRManagePage() {
         .eq('id', editingQR.id)
 
       if (error) {
-        console.error('更新二维码失败:', error)
+        console.error('QR代码更新失败:', error)
         alert('更新失败: ' + error.message)
         return
       }
@@ -232,14 +226,14 @@ export default function QRManagePage() {
       setEditForm({ code: '', secure_code: '', status: 'unassigned' })
       await loadQRCodes()
     } catch (err: any) {
-      console.error('更新二维码异常:', err)
+      console.error('QR代码更新异常:', err)
       alert('更新失败: ' + err.message)
     }
   }
 
-  // 处理删除二维码
+  // 处理QR代码删除
   const handleDeleteQR = async (qr: QRCodeData) => {
-    if (!confirm(`确定要删除二维码 "${qr.code}" 吗？此操作不可撤销。`)) {
+    if (!confirm(`确定要删除QR代码 "${qr.code}"吗？此操作无法撤销。`)) {
       return
     }
 
@@ -250,7 +244,7 @@ export default function QRManagePage() {
         .eq('id', qr.id)
 
       if (error) {
-        console.error('删除二维码失败:', error)
+        console.error('QR代码删除失败:', error)
         alert('删除失败: ' + error.message)
         return
       }
@@ -258,18 +252,23 @@ export default function QRManagePage() {
       alert('删除成功！')
       await loadQRCodes()
     } catch (err: any) {
-      console.error('删除二维码异常:', err)
+      console.error('QR代码删除异常:', err)
       alert('删除失败: ' + err.message)
     }
   }
 
-  // 筛选二维码数据
+  // 过滤QR代码数据
   const filteredQRCodes = qrCodes.filter(qr => {
     const matchesSearch = qr.code.toLowerCase().includes(qrSearchTerm.toLowerCase()) ||
                          (qr.secure_code && qr.secure_code.toLowerCase().includes(qrSearchTerm.toLowerCase()))
     const matchesStatus = qrStatusFilter === 'all' || qr.status === qrStatusFilter
     return matchesSearch && matchesStatus
   })
+
+  // 认证检查 - 如果未登录，重定向到登录页面
+  if (!sessionManager.isLoggedIn()) {
+    return <Navigate to="/admin@7@/login" replace />
+  }
 
   return (
     <div className="min-h-screen bg-surface-near-black">
@@ -286,7 +285,7 @@ export default function QRManagePage() {
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-text-secondary w-4 h-4" />
                 <input
                   type="text"
-                  placeholder="搜索二维码代码或安全码..."
+                  placeholder="搜索QR代码或安全代码..."
                   value={qrSearchTerm}
                   onChange={(e) => setQrSearchTerm(e.target.value)}
                   className="w-full pl-10 pr-4 py-2 bg-surface-near-black border border-white/20 rounded-lg text-text-primary placeholder-text-secondary focus:outline-none focus:border-primary-500"
@@ -317,7 +316,7 @@ export default function QRManagePage() {
             <div className="bg-surface-near-black/50 rounded-lg p-4 border border-white/10">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-text-secondary text-sm">总数</p>
+                  <p className="text-text-secondary text-sm">总计</p>
                   <p className="text-2xl font-bold text-text-primary">{qrStats.total}</p>
                 </div>
                 <QrCode className="w-8 h-8 text-primary-500" />
@@ -348,11 +347,11 @@ export default function QRManagePage() {
           </div>
         </div>
 
-        {/* 二维码列表 */}
+        {/* QR代码列表 */}
         <div className="bg-surface-near-black rounded-lg border border-white/10">
           <div className="p-6 border-b border-white/10">
             <div className="flex items-center justify-between">
-              <h2 className="text-lg font-semibold text-text-primary">二维码列表</h2>
+              <h2 className="text-lg font-semibold text-text-primary">QR代码列表</h2>
               <div className="flex items-center gap-3">
                 <button
                   onClick={handleBatchDownload}
@@ -360,7 +359,7 @@ export default function QRManagePage() {
                   className="btn btn-secondary"
                 >
                   <Archive className="w-4 h-4" />
-                  {isDownloading ? '下载中...' : `下载选中 (${selectedQRs.size})`}
+                  {isDownloading ? '下载中...' : `选择下载 (${selectedQRs.size})`}
                 </button>
                 <button
                   onClick={() => setShowBatchModal(true)}
@@ -386,7 +385,7 @@ export default function QRManagePage() {
             <div className="p-8 text-center">
               <QrCode className="w-12 h-12 text-text-secondary mx-auto mb-4" />
               <p className="text-text-secondary">
-                {qrSearchTerm ? '没有找到匹配的二维码' : '暂无二维码数据'}
+                {qrSearchTerm ? '未找到匹配的QR代码' : '暂无QR代码数据'}
               </p>
             </div>
           ) : (
@@ -407,10 +406,10 @@ export default function QRManagePage() {
                         选择
                       </button>
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">二维码代码</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">安全码</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">QR代码</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">安全代码</th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">状态</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">关联用户</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">连接用户</th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">通话记录</th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">创建时间</th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">操作</th>
@@ -436,7 +435,7 @@ export default function QRManagePage() {
                           <button 
                             onClick={() => handlePreviewQR(qr)}
                             className="w-8 h-8 bg-primary-500 rounded-full flex items-center justify-center hover:bg-primary-400 transition-colors cursor-pointer"
-                            title="点击查看二维码"
+                            title="点击查看QR代码"
                           >
                             <QrCode className="w-4 h-4 text-white" />
                           </button>
@@ -469,7 +468,7 @@ export default function QRManagePage() {
                           <button 
                             onClick={() => handlePreviewQR(qr)}
                             className="text-blue-400 hover:text-blue-300 transition-colors"
-                            title="查看详情"
+                            title="详细查看"
                           >
                             <Eye className="w-4 h-4" />
                           </button>
@@ -498,12 +497,12 @@ export default function QRManagePage() {
         </div>
       </div>
 
-      {/* 二维码预览模态框 */}
+      {/* QR代码预览模态框 */}
       {previewQR && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50" onClick={() => setPreviewQR(null)}>
           <div className="bg-surface-near-black rounded-lg p-6 max-w-lg w-full mx-4" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-lg font-semibold text-text-primary">二维码详情</h3>
+              <h3 className="text-lg font-semibold text-text-primary">QR代码详细信息</h3>
               <button onClick={() => setPreviewQR(null)} className="text-text-secondary hover:text-text-primary">
                 <X className="w-5 h-5" />
               </button>
@@ -514,7 +513,7 @@ export default function QRManagePage() {
                 <div className="inline-block p-4 bg-white rounded-lg">
                   <img 
                     src={qrImageUrl} 
-                    alt="二维码" 
+                    alt="QR代码" 
                     className="w-48 h-48"
                   />
                 </div>
@@ -527,12 +526,12 @@ export default function QRManagePage() {
             
             <div className="space-y-3">
               <div>
-                <label className="text-sm text-text-secondary">二维码代码</label>
+                <label className="text-sm text-text-secondary">QR代码</label>
                 <p className="text-text-primary font-mono text-lg">{previewQR.code}</p>
               </div>
               {previewQR.secure_code && (
                 <div>
-                  <label className="text-sm text-text-secondary">安全码</label>
+                  <label className="text-sm text-text-secondary">安全代码</label>
                   <p className="text-text-primary font-mono text-lg">{previewQR.secure_code}</p>
                 </div>
               )}
@@ -558,7 +557,7 @@ export default function QRManagePage() {
                   className="w-full px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-400 transition-colors flex items-center justify-center gap-2"
                 >
                   <Download className="w-4 h-4" />
-                  下载二维码
+                  QR代码下载
                 </button>
               </div>
             )}
@@ -566,12 +565,12 @@ export default function QRManagePage() {
         </div>
       )}
 
-      {/* 编辑二维码模态框 */}
+      {/* QR代码编辑模态框 */}
       {editingQR && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50" onClick={() => setEditingQR(null)}>
           <div className="bg-surface-near-black rounded-lg p-6 max-w-md w-full mx-4" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-text-primary">编辑二维码</h3>
+              <h3 className="text-lg font-semibold text-text-primary">QR代码编辑</h3>
               <button onClick={() => setEditingQR(null)} className="text-text-secondary hover:text-text-primary">
                 <X className="w-5 h-5" />
               </button>
@@ -579,26 +578,26 @@ export default function QRManagePage() {
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-text-secondary mb-2">
-                  二维码代码
+                  QR代码
                 </label>
                 <input
                   type="text"
                   value={editForm.code}
                   onChange={(e) => setEditForm({ ...editForm, code: e.target.value })}
                   className="w-full px-3 py-2 bg-surface-near-black border border-white/20 rounded-lg text-text-primary placeholder-text-secondary focus:outline-none focus:border-primary-500"
-                  placeholder="请输入二维码代码"
+                  placeholder="请输入QR代码"
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium text-text-secondary mb-2">
-                  安全码
+                  安全代码
                 </label>
                 <input
                   type="text"
                   value={editForm.secure_code}
                   onChange={(e) => setEditForm({ ...editForm, secure_code: e.target.value })}
                   className="w-full px-3 py-2 bg-surface-near-black border border-white/20 rounded-lg text-text-primary placeholder-text-secondary focus:outline-none focus:border-primary-500"
-                  placeholder="请输入安全码（可选）"
+                  placeholder="请输入安全代码（可选）"
                 />
               </div>
               <div>
@@ -638,7 +637,7 @@ export default function QRManagePage() {
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50" onClick={() => setShowBatchModal(false)}>
           <div className="bg-surface-near-black rounded-lg p-6 max-w-md w-full mx-4" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-text-primary">批量生成二维码</h3>
+              <h3 className="text-lg font-semibold text-text-primary">QR代码批量生成</h3>
               <button onClick={() => setShowBatchModal(false)} className="text-text-secondary hover:text-text-primary">
                 <X className="w-5 h-5" />
               </button>
@@ -654,19 +653,19 @@ export default function QRManagePage() {
                   max="10000"
                   value={batchCount}
                   onChange={(e) => setBatchCount(e.target.value)}
-                  placeholder="请输入生成数量 (1-10000)"
+                  placeholder="请输入生成数量（1-10000）"
                   className="w-full px-3 py-2 bg-surface-near-black border border-white/20 rounded-lg text-text-primary placeholder-text-secondary focus:outline-none focus:border-primary-500"
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium text-text-secondary mb-2">
-                  前缀标识
+                  前缀标识符
                 </label>
                 <input
                   type="text"
                   value={batchPrefix}
                   onChange={(e) => setBatchPrefix(e.target.value)}
-                  placeholder="请输入前缀标识"
+                  placeholder="请输入前缀标识符"
                   className="w-full px-3 py-2 bg-surface-near-black border border-white/20 rounded-lg text-text-primary placeholder-text-secondary focus:outline-none focus:border-primary-500"
                 />
               </div>
@@ -681,27 +680,27 @@ export default function QRManagePage() {
                   onClick={async () => {
                     const count = parseInt(batchCount)
                     if (!count || count < 1 || count > 10000) {
-                      alert('请输入有效的生成数量 (1-10000)')
+                      alert('请输入有效的生成数量（1-10000）')
                       return
                     }
                     if (!batchPrefix.trim()) {
-                      alert('请输入前缀标识')
+                      alert('请输入前缀标识符')
                       return
                     }
 
                     try {
-                      // 验证前缀长度（确保前缀 + 6位数字不超过50字符）
+                      // 验证前缀长度（确保前缀 + 6位数字不超过50个字符）
                       if (batchPrefix.length > 44) {
-                        alert('前缀长度不能超过44个字符（前缀+6位数字总长度不能超过50字符）')
+                        alert('前缀长度不能超过44个字符（前缀+6位数字总长度不能超过50个字符）')
                         return
                       }
 
                       const qrCodes = []
                       for (let i = 0; i < count; i++) {
-                        // 生成6位随机数字
+                        // 生成6位随机数
                         const randomNumber = Math.floor(Math.random() * 900000 + 100000).toString()
                         const code = `${batchPrefix}${randomNumber}`
-                        // 生成更短的secure_code，使用时间戳后6位 + 6位随机字符 = 12位
+                        // 生成更短的secure_code，时间戳后6位 + 6位随机字符 = 12位
                         const timestamp = Date.now().toString().slice(-6)
                         const random = Math.random().toString(36).substr(2, 6).toUpperCase()
                         const secure_code = `${timestamp}${random}`
@@ -725,11 +724,11 @@ export default function QRManagePage() {
                         setBatchCount('')
                         setBatchPrefix('QR')
                         await loadQRCodes()
-                        alert(`成功生成 ${count} 个二维码！`)
+                        alert(`成功生成了 ${count} 个QR代码！`)
                       }
                     } catch (err: any) {
                       console.error('批量生成异常:', err)
-                      alert('批量生成时发生错误: ' + err.message)
+                      alert('批量生成过程中发生错误: ' + err.message)
                     }
                   }}
                   className="flex-1 px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-400 transition-colors"

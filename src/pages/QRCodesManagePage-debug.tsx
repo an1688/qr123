@@ -187,7 +187,7 @@ export default function QRCodesManagePage() {
 
   const handleLogout = () => {
     localStorage.removeItem('admin_logged_in')
-    navigate('/admin/login')
+    navigate('/admin@7@/login')
   }
 
   if (loading) {
@@ -210,7 +210,7 @@ export default function QRCodesManagePage() {
             <h1 className="text-xl font-semibold text-text-primary">二维码停车联系牌系统 - 管理后台</h1>
             <div className="flex items-center gap-4">
               <button
-                onClick={() => navigate('/admin/dashboard')}
+                onClick={() => navigate('/admin@7@/dashboard')}
                 className="text-text-secondary hover:text-text-primary transition-colors"
               >
                 返回仪表板

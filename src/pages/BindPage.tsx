@@ -62,6 +62,28 @@ export default function BindPage() {
         console.log('从URL中提取的标识符:', identifier)
       }
 
+      // 演示模式处理 - 如果是demo123，直接进入演示模式
+      if (identifier === 'demo123') {
+        console.log('演示模式，模拟QR码数据')
+        
+        // 模拟QR码数据
+        const mockQRCode = {
+          id: 'demo',
+          code: 'demo123',
+          secure_code: 'demo123',
+          status: 'unassigned',
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        }
+        
+        setQRCode(mockQRCode)
+        
+        // 演示模式下直接显示设置界面
+        setShowSetup(true)
+        setLoading(false)
+        return
+      }
+
       // 获取二维码信息 - 首先尝试通过secure_code查找，然后通过code查找
       console.log('尝试通过secure_code查找:', identifier)
       let { data: qrData, error: qrError } = await supabase
@@ -114,7 +136,7 @@ export default function BindPage() {
         console.log('相似的二维码:', similarQRs)
         console.log('相似查询错误:', similarError)
         
-        setError(`二维码不存在 (ID: ${id})`)
+        setError(`QR코드가 존재하지 않습니다 (ID: ${id})`)
         return
       }
 
@@ -167,7 +189,7 @@ export default function BindPage() {
       }
 
     } catch (err: any) {
-      console.error('加载数据失败:', err)
+      console.error('로딩 실패:', err)
       setError(err.message || '로딩 실패')
     } finally {
       setLoading(false)
@@ -195,7 +217,7 @@ export default function BindPage() {
     const cleaned = phone.replace(/\D/g, '')
     
     if (cleaned.length !== 11) {
-      return { valid: false, message: '11자리 번호를 완전히 입력해주세요' }
+      return { valid: false, message: '11자리 번호를 모두 입력해주세요' }
     }
 
     if (validateKoreanPhone(phone)) {
@@ -373,6 +395,18 @@ export default function BindPage() {
       setSubmitting(true)
       setError('')
 
+      // 演示模式处理
+      if (qrCode.code === 'demo123') {
+        console.log('演示模式，模拟提交成功')
+        handleSuccess()
+        setSuccess(true)
+        setTimeout(() => {
+          // 演示模式下跳转到演示通话页面
+          navigate(`/call/demo123`)
+        }, 2000)
+        return
+      }
+
       if (existingBinding) {
         // 更新已有绑定
         const { error: updateError } = await supabase
@@ -418,7 +452,7 @@ export default function BindPage() {
       }, 2000)
 
     } catch (err: any) {
-      console.error('绑定失败:', err)
+      console.error('연결 실패:', err)
       setError(err.message || '연결 실패, 다시 시도해주세요')
     } finally {
       setSubmitting(false)
@@ -561,7 +595,7 @@ export default function BindPage() {
         <div className="card max-w-md w-full text-center">
           <AlertCircle className="w-16 h-16 text-error mx-auto mb-4" />
           <h2 className="text-2xl font-semibold text-error mb-2">오류 발생</h2>
-          <p className="text-text-secondary mb-6">QR 코드가 존재하지 않습니다</p>
+          <p className="text-text-secondary mb-6">QR코드가 존재하지 않습니다</p>
           <button onClick={() => navigate('/')} className="btn btn-ghost">
             홈으로 돌아가기
           </button>
@@ -588,7 +622,7 @@ export default function BindPage() {
           {/* 设置按钮 */}
           <div className="card">
             <p className="text-text-secondary mb-6">
-              방문객이 QR 코드를 스캔하면 바로 전화할 수 있습니다
+              방문객이 QR코드를 스캔한 후 즉시 통화할 수 있습니다
             </p>
             <button
               onClick={() => {
@@ -604,7 +638,7 @@ export default function BindPage() {
 
           {/* 二维码信息 */}
           <div className="text-center">
-            <div className="text-sm text-text-secondary mb-2">QR 코드 번호</div>
+            <div className="text-sm text-text-secondary mb-2">QR코드 번호</div>
             <div className="text-xl font-bold font-mono text-primary-500">
               {id}
             </div>
@@ -626,7 +660,7 @@ export default function BindPage() {
             </h1>
           </div>
           <p className="text-text-secondary">
-            {new URLSearchParams(location.search).get('mode') === 'edit' ? '설정 버튼을 통해 편집 모드로 진입' : '방문객이 QR 코드를 스캔하면 바로 전화할 수 있습니다'}
+            {new URLSearchParams(location.search).get('mode') === 'edit' ? '설정 버튼을 통해 편집 모드로 들어갑니다' : '방문객이 QR코드를 스캔한 후 즉시 통화할 수 있습니다'}
           </p>
         </div>
 
@@ -640,7 +674,7 @@ export default function BindPage() {
 
           <div>
             <label className="block text-sm font-medium text-text-secondary mb-3">
-              휴대폰 번호 1 <span className="text-error">*</span>
+              휴대폰 번호1 <span className="text-error">*</span>
             </label>
             
             {/* 可编辑的数字方框 */}
@@ -658,7 +692,7 @@ export default function BindPage() {
 
           <div>
             <label className="block text-sm font-medium text-text-secondary mb-3">
-              휴대폰 번호 2 <span className="text-text-tertiary">(선택사항)</span>
+              휴대폰 번호2 <span className="text-text-tertiary">(선택사항)</span>
             </label>
             
             {/* 可编辑的数字方框 */}
@@ -677,7 +711,7 @@ export default function BindPage() {
           {/* 管理密码 */}
           <div>
             <label htmlFor="managementPassword" className="block text-sm font-medium text-text-secondary mb-2">
-              관리 비밀번호 {existingBinding ? <span className="text-text-tertiary">(비워두면 원래 비밀번호 유지)</span> : <span className="text-error">*</span>}
+              관리 비밀번호 {existingBinding ? <span className="text-text-tertiary">(비워두면 기존 비밀번호 유지)</span> : <span className="text-error">*</span>}
             </label>
             <input
               id="managementPassword"
@@ -698,7 +732,7 @@ export default function BindPage() {
                 }
               }}
               onFocus={() => handleFocus()}
-              placeholder={existingBinding ? "비워두면 원래 비밀번호 유지" : "관리 비밀번호 설정"}
+              placeholder={existingBinding ? "비워두면 기존 비밀번호 유지" : "관리 비밀번호 설정"}
               className="input"
               required={!existingBinding}
             />
@@ -706,7 +740,7 @@ export default function BindPage() {
               <p className="text-xs text-error mt-2">{passwordError}</p>
             )}
             {existingBinding && !managementPassword && (
-              <p className="text-xs text-text-tertiary mt-2">새 비밀번호를 입력하지 않으면 원래 비밀번호 유지</p>
+              <p className="text-xs text-text-tertiary mt-2">새 비밀번호를 입력하지 않으면 기존 비밀번호를 유지합니다</p>
             )}
           </div>
 
@@ -721,7 +755,7 @@ export default function BindPage() {
 
         {/* 二维码信息 - 移到底部 */}
         <div className="card mt-6 text-center">
-          <div className="text-sm text-text-secondary mb-2">QR 코드 번호</div>
+          <div className="text-sm text-text-secondary mb-2">二维码号码</div>
           <div className="text-2xl font-bold font-mono text-primary-500">
             {id}
           </div>
@@ -741,7 +775,7 @@ export default function BindPage() {
             onClick={() => setShowSetup(false)}
             className="btn btn-ghost w-full"
           >
-            돌아가기
+            返回
           </button>
         </div>
       </div>

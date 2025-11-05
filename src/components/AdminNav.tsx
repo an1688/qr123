@@ -13,38 +13,38 @@ export default function AdminNav({ currentPage, currentTab }: AdminNavProps) {
 
   function handleLogout() {
     sessionManager.clearSession()
-    navigate('/admin/login')
+    navigate('/admin@7@/login')
   }
 
   const navItems = [
     {
       key: 'dashboard',
       label: '仪表板',
-      path: '/admin/dashboard'
+      path: '/admin@7@/dashboard'
     },
     {
       key: 'qr-manage',
-      label: '二维码管理',
-      path: '/admin/qrcodes'
+      label: 'QR码管理',
+      path: '/admin@7@/qrcodes'
     },
     {
       key: 'user-manage',
       label: '客户管理',
-      path: '/admin/users'
+      path: '/admin@7@/users'
     },
     {
       key: 'calls',
       label: '通话记录',
-      path: '/admin/calls'
+      path: '/admin@7@/calls'
     }
   ]
 
   // 判断当前页面状态
   const getCurrentPage = () => {
-    if (location.pathname === '/admin/dashboard') return 'dashboard'
-    if (location.pathname === '/admin/qrcodes') return 'qr-manage'
-    if (location.pathname === '/admin/users') return 'user-manage'
-    if (location.pathname === '/admin/calls') return 'calls'
+    if (location.pathname === '/admin@7@/dashboard') return 'dashboard'
+    if (location.pathname === '/admin@7@/qrcodes') return 'qr-manage'
+    if (location.pathname === '/admin@7@/users') return 'user-manage'
+    if (location.pathname === '/admin@7@/calls') return 'calls'
     return currentPage || 'dashboard'
   }
 

@@ -38,7 +38,7 @@ export default function UnifiedManagePage() {
   useEffect(() => {
     const isLoggedIn = localStorage.getItem('admin_logged_in')
     if (!isLoggedIn) {
-      navigate('/admin/login')
+      navigate('/admin@7@/login')
       return
     }
   }, [navigate])
@@ -265,7 +265,7 @@ export default function UnifiedManagePage() {
         {/* 页面标题 */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-text-primary mb-2">统一管理</h1>
-          <p className="text-text-secondary">管理二维码和用户信息</p>
+          <p className="text-text-secondary">QR码和用户信息管理</p>
         </div>
 
         {/* 选项卡导航 */}
@@ -282,7 +282,7 @@ export default function UnifiedManagePage() {
               >
                 <div className="flex items-center gap-2">
                   <QrCode className="w-5 h-5" />
-                  二维码管理
+                  QR码管理
                   <span className="bg-white/10 text-xs px-2 py-1 rounded-full">
                     {qrStats.total}
                   </span>
@@ -319,7 +319,7 @@ export default function UnifiedManagePage() {
                     <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-text-secondary w-4 h-4" />
                     <input
                       type="text"
-                      placeholder="搜索二维码代码或安全码..."
+                      placeholder="搜索QR码或安全码..."
                       value={qrSearchTerm}
                       onChange={(e) => setQrSearchTerm(e.target.value)}
                       className="w-full pl-10 pr-4 py-2 bg-surface-near-black border border-white/20 rounded-lg text-text-primary placeholder-text-secondary focus:outline-none focus:border-primary-500"
@@ -350,7 +350,7 @@ export default function UnifiedManagePage() {
                 <div className="bg-surface-near-black/50 rounded-lg p-4 border border-white/10">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-text-secondary text-sm">总数</p>
+                      <p className="text-text-secondary text-sm">总计</p>
                       <p className="text-2xl font-bold text-text-primary">{qrStats.total}</p>
                     </div>
                     <QrCode className="w-8 h-8 text-primary-500" />
@@ -385,7 +385,7 @@ export default function UnifiedManagePage() {
             <div className="bg-surface-near-black rounded-lg border border-white/10">
               <div className="p-6 border-b border-white/10">
                 <div className="flex items-center justify-between">
-                  <h2 className="text-lg font-semibold text-text-primary">二维码列表</h2>
+                  <h2 className="text-lg font-semibold text-text-primary">QR码列表</h2>
                   <button
                     onClick={() => setShowBatchModal(true)}
                     className="btn btn-primary"
@@ -409,7 +409,7 @@ export default function UnifiedManagePage() {
                 <div className="p-8 text-center">
                   <QrCode className="w-12 h-12 text-text-secondary mx-auto mb-4" />
                   <p className="text-text-secondary">
-                    {qrSearchTerm ? '没有找到匹配的二维码' : '暂无二维码数据'}
+                    {qrSearchTerm ? '找不到匹配的QR码' : '没有QR码数据'}
                   </p>
                 </div>
               ) : (
@@ -417,7 +417,7 @@ export default function UnifiedManagePage() {
                   <table className="w-full">
                     <thead className="bg-surface-near-black">
                       <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">二维码代码</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">QR码</th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">安全码</th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">状态</th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">关联用户</th>
@@ -434,7 +434,7 @@ export default function UnifiedManagePage() {
                               <button 
                                 onClick={() => handlePreviewQR(qr)}
                                 className="w-8 h-8 bg-primary-500 rounded-full flex items-center justify-center hover:bg-primary-400 transition-colors cursor-pointer"
-                                title="点击查看二维码"
+                                title="点击查看QR码"
                               >
                                 <QrCode className="w-4 h-4 text-white" />
                               </button>
@@ -501,7 +501,7 @@ export default function UnifiedManagePage() {
                     <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-text-secondary w-4 h-4" />
                     <input
                       type="text"
-                      placeholder="搜索用户手机号或二维码..."
+                      placeholder="搜索用户电话或QR码..."
                       value={userSearchTerm}
                       onChange={(e) => setUserSearchTerm(e.target.value)}
                       className="w-full pl-10 pr-4 py-2 bg-surface-near-black border border-white/20 rounded-lg text-text-primary placeholder-text-secondary focus:outline-none focus:border-primary-500"
@@ -523,7 +523,7 @@ export default function UnifiedManagePage() {
                 <div className="bg-surface-near-black/50 rounded-lg p-4 border border-white/10">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-text-secondary text-sm">总数</p>
+                      <p className="text-text-secondary text-sm">总计</p>
                       <p className="text-2xl font-bold text-text-primary">{userStats.total}</p>
                     </div>
                     <Users className="w-8 h-8 text-primary-500" />
@@ -584,7 +584,7 @@ export default function UnifiedManagePage() {
                 <div className="p-8 text-center">
                   <Users className="w-12 h-12 text-text-secondary mx-auto mb-4" />
                   <p className="text-text-secondary">
-                    {userSearchTerm ? '没有找到匹配的用户' : '暂无用户数据'}
+                    {userSearchTerm ? '找不到匹配的用户' : '没有用户数据'}
                   </p>
                 </div>
               ) : (
@@ -593,9 +593,9 @@ export default function UnifiedManagePage() {
                     <thead className="bg-surface-near-black">
                       <tr>
                         <th className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">用户ID</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">主要号码</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">备用号码</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">关联二维码</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">主号码</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">副号码</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">关联QR码</th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">绑定时间</th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">状态</th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">操作</th>
@@ -636,7 +636,7 @@ export default function UnifiedManagePage() {
                                   setShowUserPreview(true)
                                 }}
                                 className="w-8 h-8 bg-primary-500 rounded flex items-center justify-center hover:bg-primary-400 transition-colors cursor-pointer"
-                                title="点击查看二维码详情"
+                                title="点击查看QR码详情"
                               >
                                 <QrCode className="w-4 h-4 text-white" />
                               </button>
@@ -675,7 +675,7 @@ export default function UnifiedManagePage() {
                                   </button>
                                   <button 
                                     onClick={async () => {
-                                      if (!confirm('确定要删除这个用户绑定吗？此操作不可撤销。')) return
+                                      if (!confirm('确定要删除此用户绑定吗？此操作无法撤销。')) return
                                       const { error } = await supabase
                                         .from('phone_bindings')
                                         .update({ 
@@ -684,7 +684,7 @@ export default function UnifiedManagePage() {
                                         })
                                         .eq('id', user.id)
                                       if (error) {
-                                        alert('删除失败: ' + error.message)
+                                        alert('删除失败：' + error.message)
                                       } else {
                                         await loadUsers()
                                         alert('用户删除成功！')
@@ -717,7 +717,7 @@ export default function UnifiedManagePage() {
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50" onClick={() => setPreviewQR(null)}>
             <div className="bg-surface-near-black rounded-lg p-6 max-w-lg w-full mx-4" onClick={(e) => e.stopPropagation()}>
               <div className="flex items-center justify-between mb-6">
-                <h3 className="text-lg font-semibold text-text-primary">二维码详情</h3>
+                <h3 className="text-lg font-semibold text-text-primary">QR码详情</h3>
                 <button onClick={() => setPreviewQR(null)} className="text-text-secondary hover:text-text-primary">
                   <X className="w-5 h-5" />
                 </button>
@@ -728,7 +728,7 @@ export default function UnifiedManagePage() {
                   <div className="inline-block p-4 bg-white rounded-lg">
                     <img 
                       src={qrImageUrl} 
-                      alt="二维码" 
+                      alt="QR码" 
                       className="w-48 h-48"
                     />
                   </div>
@@ -741,7 +741,7 @@ export default function UnifiedManagePage() {
               
               <div className="space-y-3">
                 <div>
-                  <label className="text-sm text-text-secondary">二维码代码</label>
+                  <label className="text-sm text-text-secondary">QR码</label>
                   <p className="text-text-primary font-mono text-lg">{previewQR.code}</p>
                 </div>
                 {previewQR.secure_code && (
@@ -772,7 +772,7 @@ export default function UnifiedManagePage() {
                     className="w-full px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-400 transition-colors flex items-center justify-center gap-2"
                   >
                     <Download className="w-4 h-4" />
-                    下载二维码
+                    下载QR码
                   </button>
                 </div>
               )}
@@ -785,7 +785,7 @@ export default function UnifiedManagePage() {
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50" onClick={() => setShowBatchModal(false)}>
             <div className="bg-surface-near-black rounded-lg p-6 max-w-md w-full mx-4" onClick={(e) => e.stopPropagation()}>
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold text-text-primary">批量生成二维码</h3>
+                <h3 className="text-lg font-semibold text-text-primary">QR码批量生成</h3>
                 <button onClick={() => setShowBatchModal(false)} className="text-text-secondary hover:text-text-primary">
                   <X className="w-5 h-5" />
                 </button>
@@ -801,19 +801,19 @@ export default function UnifiedManagePage() {
                     max="100"
                     value={batchCount}
                     onChange={(e) => setBatchCount(e.target.value)}
-                    placeholder="请输入生成数量 (1-100)"
+                    placeholder="输入生成数量 (1-100)"
                     className="w-full px-3 py-2 bg-surface-near-black border border-white/20 rounded-lg text-text-primary placeholder-text-secondary focus:outline-none focus:border-primary-500"
                   />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-text-secondary mb-2">
-                    前缀标识
+                    前缀标识符
                   </label>
                   <input
                     type="text"
                     value={batchPrefix}
                     onChange={(e) => setBatchPrefix(e.target.value)}
-                    placeholder="请输入前缀标识"
+                    placeholder="输入前缀标识符"
                     className="w-full px-3 py-2 bg-surface-near-black border border-white/20 rounded-lg text-text-primary placeholder-text-secondary focus:outline-none focus:border-primary-500"
                   />
                 </div>
@@ -832,7 +832,7 @@ export default function UnifiedManagePage() {
                         return
                       }
                       if (!batchPrefix.trim()) {
-                        alert('请输入前缀标识')
+                        alert('请输入前缀标识符')
                         return
                       }
 
@@ -855,17 +855,17 @@ export default function UnifiedManagePage() {
 
                         if (error) {
                           console.error('批量生成错误:', error)
-                          alert('批量生成失败: ' + error.message)
+                          alert('批量生成失败：' + error.message)
                         } else {
                           setShowBatchModal(false)
                           setBatchCount('')
                           setBatchPrefix('QR')
                           await loadQRCodes()
-                          alert(`成功生成 ${count} 个二维码！`)
+                          alert(`成功生成 ${count} 个QR码！`)
                         }
                       } catch (err: any) {
                         console.error('批量生成异常:', err)
-                        alert('批量生成时发生错误: ' + err.message)
+                        alert('批量生成过程中发生错误：' + err.message)
                       }
                     }}
                     className="flex-1 px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-400 transition-colors"
@@ -890,7 +890,7 @@ export default function UnifiedManagePage() {
               </div>
               <div className="space-y-3">
                 <div>
-                  <label className="text-sm text-text-secondary">二维码代码</label>
+                  <label className="text-sm text-text-secondary">QR码</label>
                   <p className="text-text-primary font-mono">{previewUserQR.code}</p>
                 </div>
                 {previewUserQR.secure_code && (

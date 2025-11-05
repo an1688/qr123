@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Navigate } from 'react-router-dom'
 import { QrCode, Users, Phone, BarChart3, RefreshCw, TrendingUp, TrendingDown, LogOut } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 import { sessionManager } from '../utils/sessionManager'
@@ -30,18 +30,15 @@ interface DashboardStats {
 export default function AdminDashboardPage() {
   const navigate = useNavigate()
   
-  // 认证检查
-  useEffect(() => {
-    if (!sessionManager.isLoggedIn()) {
-      navigate('/admin/login')
-      return
-    }
-  }, [navigate])
+  // 认证检查 - 如果未登录，重定向到登录页面
+  if (!sessionManager.isLoggedIn()) {
+    return <Navigate to="/admin@7@/login" replace />
+  }
 
   // 登出功能
   const handleLogout = () => {
     sessionManager.clearSession()
-    navigate('/admin/login')
+    navigate('/admin@7@/login')
   }
   
   const [stats, setStats] = useState<DashboardStats>({
@@ -65,17 +62,17 @@ export default function AdminDashboardPage() {
   const menuItems = [
     {
       icon: QrCode,
-      title: '二维码管理',
-      description: '管理停车位二维码',
-      path: '/admin/qrcodes',
+      title: 'QR码管理',
+      description: '停车场QR码管理',
+      path: '/admin@7@/qrcodes',
       color: 'bg-blue-500',
       count: stats.totalQRCodes
     },
     {
       icon: Users,
       title: '客户管理',
-      description: '管理系统用户',
-      path: '/admin/users',
+      description: '系统用户管理',
+      path: '/admin@7@/users',
       color: 'bg-green-500',
       count: stats.totalUsers
     },
@@ -83,7 +80,7 @@ export default function AdminDashboardPage() {
       icon: Phone,
       title: '通话记录',
       description: '查看通话记录',
-      path: '/admin/calls',
+      path: '/admin@7@/calls',
       color: 'bg-purple-500',
       count: stats.totalCalls
     }
@@ -180,7 +177,7 @@ export default function AdminDashboardPage() {
       setLastUpdated(new Date())
 
     } catch (err: any) {
-      console.error('加载统计数据异常:', err)
+      console.error('统计数据加载错误:', err)
       setError('加载统计数据时发生错误: ' + err.message)
     } finally {
       setLoading(false)
@@ -214,7 +211,7 @@ export default function AdminDashboardPage() {
       <div className="min-h-screen bg-surface-near-black flex items-center justify-center">
         <div className="flex items-center gap-3">
           <RefreshCw className="w-6 h-6 text-primary-500 animate-spin" />
-          <span className="text-text-primary">加载统计数据中...</span>
+          <span className="text-text-primary">正在加载统计数据...</span>
         </div>
       </div>
     )
@@ -269,7 +266,7 @@ export default function AdminDashboardPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <div className="bg-surface-light-gray rounded-lg p-6 border border-white/10">
             <div className="flex items-center justify-between mb-2">
-              <h3 className="text-lg font-semibold text-text-primary">总二维码</h3>
+              <h3 className="text-lg font-semibold text-text-primary">总QR码</h3>
               <QrCode className="w-5 h-5 text-blue-500" />
             </div>
             <p className="text-3xl font-bold text-blue-500 mb-1">{formatNumber(stats.totalQRCodes)}</p>
@@ -320,7 +317,7 @@ export default function AdminDashboardPage() {
               {stats.totalQRCodes > 0 ? Math.round((stats.assignedQRCodes / stats.totalQRCodes) * 100) : 0}%
             </p>
             <div className="flex items-center gap-4 text-sm">
-              <span className="text-text-secondary">二维码使用率</span>
+              <span className="text-text-secondary">QR码使用率</span>
             </div>
           </div>
         </div>
@@ -369,19 +366,19 @@ export default function AdminDashboardPage() {
             <h3 className="text-lg font-semibold text-text-primary mb-4">快速操作</h3>
             <div className="space-y-2">
               <button
-                onClick={() => navigate('/admin/qrcodes')}
+                onClick={() => navigate('/admin@7@/qrcodes')}
                 className="w-full text-left px-3 py-2 text-sm text-text-primary hover:bg-surface-near-black rounded transition-colors"
               >
-                生成新二维码
+                创建新QR码
               </button>
               <button
-                onClick={() => navigate('/admin/users')}
+                onClick={() => navigate('/admin@7@/users')}
                 className="w-full text-left px-3 py-2 text-sm text-text-primary hover:bg-surface-near-black rounded transition-colors"
               >
                 查看用户列表
               </button>
               <button
-                onClick={() => navigate('/admin/calls')}
+                onClick={() => navigate('/admin@7@/calls')}
                 className="w-full text-left px-3 py-2 text-sm text-text-primary hover:bg-surface-near-black rounded transition-colors"
               >
                 导出通话记录

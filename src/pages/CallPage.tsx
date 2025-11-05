@@ -8,7 +8,7 @@ import { usePageTitle } from '../hooks/usePageTitle'
 export default function CallPage() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
-  usePageTitle('차주에게 연락')
+  usePageTitle('차주 연락하기')
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [qrCode, setQRCode] = useState<QRCode | null>(null)
@@ -45,6 +45,26 @@ export default function CallPage() {
       
       setIdentifier(extractedIdentifier)
 
+      // 演示模式处理 - 如果是demo123，直接进入演示模式
+      if (extractedIdentifier === 'demo123') {
+        console.log('演示模式，模拟绑定数据')
+        
+        // 模拟绑定数据
+        const mockBinding = {
+          id: 'demo',
+          qr_code_id: 'demo',
+          phone1: '01012345678',
+          phone2: '01087654321',
+          management_password: 'demo123',
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        }
+        
+        setBinding(mockBinding)
+        setLoading(false)
+        return
+      }
+
       // 获取二维码信息 - 首先尝试通过secure_code查找，然后通过code查找
       let { data: qrData, error: qrError } = await supabase
         .from('qr_codes')
@@ -72,7 +92,7 @@ export default function CallPage() {
 
       if (qrError) throw qrError
       if (!qrData) {
-        setError('QR 코드가 존재하지 않습니다')
+        setError('QR코드가 존재하지 않습니다')
         return
       }
 
@@ -97,7 +117,7 @@ export default function CallPage() {
 
     } catch (err: any) {
       console.error('加载数据失败:', err)
-      setError(err.message || '로딩 실패')
+      setError(err.message || '加载失败')
     } finally {
       setLoading(false)
     }
@@ -105,6 +125,12 @@ export default function CallPage() {
 
   async function handleCall(phoneNumber: string) {
     try {
+      // 演示模式处理
+      if (identifier === 'demo123') {
+        alert(`演示模式：即将拨打 ${phoneNumber}`)
+        return
+      }
+
       // 记录通话日志
       if (qrCode) {
         await supabase.from('call_logs').insert({
@@ -122,16 +148,22 @@ export default function CallPage() {
 
   async function handleSMS(phoneNumber: string) {
     try {
+      // 演示模式处理
+      if (identifier === 'demo123') {
+        alert(`演示模式：即将发送短信到 ${phoneNumber}`)
+        return
+      }
+
       // 使用sms协议发送短信
       window.location.href = `sms:${phoneNumber}`
     } catch (err) {
-      console.error('문자 보내기 실패:', err)
+      console.error('SMS 보내기 실패:', err)
     }
   }
 
   async function handlePasswordSubmit() {
     if (!binding || !managementPassword) {
-      setPasswordError('관리 비밀번호를 입력하세요')
+      setPasswordError('관리 비밀번호를 입력해주세요')
       return
     }
 
@@ -152,11 +184,11 @@ export default function CallPage() {
         setManagementPassword('')
         setPasswordError('')
       } else {
-        setPasswordError('관리 비밀번호가 잘못되었습니다')
+        setPasswordError('管理密码错误')
       }
     } catch (err) {
-      console.error('비밀번호 검증 실패:', err)
-      setPasswordError('검증 실패, 다시 시도해주세요')
+      console.error('비밀번호 확인 실패:', err)
+      setPasswordError('확인 실패, 다시 시도해주세요')
     }
   }
 
@@ -191,14 +223,14 @@ export default function CallPage() {
       <div className="min-h-screen flex items-center justify-center p-6">
         <div className="card max-w-md w-full text-center">
           <AlertCircle className="w-16 h-16 text-warning mx-auto mb-4" />
-          <h2 className="text-2xl font-semibold text-text-primary mb-2">아직 연결되지 않음</h2>
-          <p className="text-text-secondary mb-2">차주가 아직 연락처를 연결하지 않았습니다</p>
-          <p className="text-sm text-text-tertiary mb-6">QR 코드: {id}</p>
+          <h2 className="text-2xl font-semibold text-text-primary mb-2">연결되지 않음</h2>
+          <p className="text-text-secondary mb-2">차주가 연락처를 아직 연결하지 않았습니다</p>
+          <p className="text-sm text-text-tertiary mb-6">QR코드: {id}</p>
           <button
             onClick={() => navigate(`/bind/${id}`)}
             className="btn btn-primary"
           >
-            저는 차주입니다, 연결하러 가기
+            저는 차주입니다, 연결하기
           </button>
         </div>
       </div>
@@ -206,78 +238,88 @@ export default function CallPage() {
   }
 
   return (
-    <div className="min-h-screen p-6 flex flex-col items-center justify-center">
-      <div className="w-full max-w-md space-y-8">
-        {/* 右上角设置按钮 */}
-        <div className="absolute top-6 right-6">
+    <div className="min-h-screen p-4 flex flex-col">
+      <div className="w-full max-w-md mx-auto flex-1 flex flex-col">
+        {/* 顶部设置按钮 */}
+        <div className="flex justify-end mb-3">
           <button
             onClick={() => setShowSettings(true)}
-            className="p-3 bg-surface-light-gray rounded-full hover:bg-surface-gray transition-colors"
+            className="p-2 bg-surface-light-gray rounded-full hover:bg-surface-gray transition-colors"
           >
-            <Settings className="w-6 h-6 text-text-secondary" />
+            <Settings className="w-5 h-5 text-text-secondary" />
           </button>
         </div>
 
-        {/* 页面头部 */}
-        <div className="text-center">
-          <div className="flex items-center justify-center gap-3 mb-3">
-            <Phone className="w-8 h-8 text-primary-500" />
-            <h1 className="text-3xl md:text-4xl font-bold text-text-primary">
-              차주에게 연락
+        {/* 紧凑的页面头部 */}
+        <div className="text-center mb-4">
+          <div className="flex items-center justify-center gap-2 mb-2">
+            <Phone className="w-6 h-6 text-primary-500" />
+            <h1 className="text-2xl font-bold text-text-primary">
+              차주 연락하기
             </h1>
           </div>
-          <p className="text-text-secondary">
-            연락 방식을 선택하세요
+          <p className="text-sm text-text-secondary">
+            연락 방법을 선택해주세요
           </p>
         </div>
 
-        {/* 手机号1卡片 */}
-        <div className="card space-y-3">
-          <div className="text-lg font-bold text-text-primary">차주 연락처</div>
+        {/* 紧凑的手机号1卡片 */}
+        <div className="card mb-3">
+          <div className="text-base font-bold text-text-primary mb-2">차주 연락처</div>
           
-          <button
-            onClick={() => handleCall(binding.phone1)}
-            className="w-full h-16 btn btn-success text-xl font-bold animate-pulse-glow"
-          >
-            <Phone className="w-6 h-6" />
-            전화 걸기
-          </button>
-
-          <button
-            onClick={() => handleSMS(binding.phone1)}
-            className="w-full h-12 btn btn-success text-lg font-bold"
-          >
-            <MessageSquare className="w-6 h-6" />
-            문자 보내기
-          </button>
-        </div>
-
-        {/* 手机号2卡片(如果有) */}
-        {binding.phone2 && (
-          <div className="card space-y-3">
-            <div className="text-lg font-bold text-text-primary">차주 연락처 2</div>
-            
+          <div className="space-y-3">
             <button
-              onClick={() => handleCall(binding.phone2!)}
-              className="w-full h-16 btn btn-success text-xl font-bold animate-pulse-glow"
+              onClick={() => handleCall(binding.phone1)}
+              className="w-full h-16 btn btn-success text-xl font-bold animate-pulse-glow flex items-center justify-center gap-3 shadow-lg"
             >
               <Phone className="w-6 h-6" />
               전화 걸기
             </button>
 
             <button
-              onClick={() => handleSMS(binding.phone2!)}
-              className="w-full h-12 btn btn-success text-lg font-bold"
+              onClick={() => handleSMS(binding.phone1)}
+              className="w-full h-12 btn btn-success text-base font-semibold flex items-center justify-center gap-2"
             >
-              <MessageSquare className="w-6 h-6" />
-              문자 보내기
+              <MessageSquare className="w-4 h-4" />
+              SMS 보내기
             </button>
+          </div>
+        </div>
+
+        {/* 紧凑的手机号2卡片(如果有) */}
+        {binding.phone2 && (
+          <div className="card mb-3">
+            <div className="text-base font-bold text-text-primary mb-2">차주 연락처 2</div>
+            
+            <div className="space-y-3">
+              <button
+                onClick={() => handleCall(binding.phone2!)}
+                className="w-full h-16 btn btn-success text-xl font-bold animate-pulse-glow flex items-center justify-center gap-3 shadow-lg"
+              >
+                <Phone className="w-6 h-6" />
+                전화 걸기
+              </button>
+
+              <button
+                onClick={() => handleSMS(binding.phone2!)}
+                className="w-full h-12 btn btn-success text-base font-semibold flex items-center justify-center gap-2"
+              >
+                <MessageSquare className="w-4 h-4" />
+                SMS 보내기
+              </button>
+            </div>
           </div>
         )}
 
         {/* 底部提示 */}
-        <div className="text-center text-sm text-text-tertiary">
-          QR 코드 번호: {id}
+        <div className="text-center text-xs text-text-tertiary mt-auto">
+          QR코드: {id}
+          {identifier === 'demo123' && (
+            <div className="mt-2 p-2 bg-blue-500/10 border border-blue-500/30 rounded-lg">
+              <p className="text-blue-400 font-medium">🎭演示模式</p>
+              <p className="text-blue-300/80">这是演示页面，不会实际拨打电话或发送短信</p>
+            </div>
+          )}
         </div>
       </div>
 
@@ -299,7 +341,7 @@ export default function CallPage() {
                     setManagementPassword(e.target.value)
                     setPasswordError('')
                   }}
-                  placeholder="관리 비밀번호를 입력하세요"
+                  placeholder="관리 비밀번호를 입력해주세요"
                   className="input"
                 />
                 {passwordError && (

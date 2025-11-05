@@ -34,7 +34,7 @@ export default function UsersManagePage() {
   const [showPreview, setShowPreview] = useState(false)
   const [previewQR, setPreviewQR] = useState<any>(null)
 
-  // 加载用户数据
+  // 用户数据加载
   const loadUsers = async () => {
     try {
       setLoading(true)
@@ -60,11 +60,11 @@ export default function UsersManagePage() {
 
       if (error) {
         console.error('数据库查询错误:', error)
-        setError('加载用户数据失败: ' + error.message)
+        setError('用户数据加载失败: ' + error.message)
         return
       }
 
-      // 处理数据，确保qr_code是单个对象而不是数组
+      // 数据处理，检查qr_code是否为单个对象而非数组
       const processedData = data?.map(user => ({
         ...user,
         qr_code: Array.isArray(user.qr_code) ? user.qr_code[0] : user.qr_code
@@ -72,7 +72,7 @@ export default function UsersManagePage() {
       
       setUsers(processedData)
       
-      // 计算统计数据
+      // 统计数据计算
       const total = processedData.length
       const active = processedData.filter((user: any) => user.qr_code?.status === 'assigned' && !user.deleted_at).length || 0
       const inactive = processedData.filter((user: any) => user.qr_code?.status !== 'assigned' && !user.deleted_at).length || 0
@@ -81,16 +81,16 @@ export default function UsersManagePage() {
       setStats({ total, active, inactive, deleted })
 
     } catch (err: any) {
-      console.error('加载用户数据异常:', err)
-      setError('加载用户数据时发生错误: ' + err.message)
+      console.error('用户数据加载异常:', err)
+      setError('用户数据加载时发生错误: ' + err.message)
     } finally {
       setLoading(false)
     }
   }
 
-  // 删除用户（软删除）
+  // 用户删除（软删除）
   const deleteUser = async (userId: string) => {
-    if (!confirm('确定要删除这个用户绑定吗？此操作不可撤销。')) {
+    if (!confirm('确定要删除此用户绑定吗？此操作不可撤销。')) {
       return
     }
 
@@ -104,7 +104,7 @@ export default function UsersManagePage() {
         .eq('id', userId)
 
       if (error) {
-        console.error('删除用户错误:', error)
+        console.error('用户删除错误:', error)
         alert('删除失败: ' + error.message)
         return
       }
@@ -114,7 +114,7 @@ export default function UsersManagePage() {
       alert('用户删除成功！')
 
     } catch (err: any) {
-      console.error('删除用户异常:', err)
+      console.error('用户删除异常:', err)
       alert('删除失败: ' + err.message)
     }
   }
@@ -124,15 +124,15 @@ export default function UsersManagePage() {
     setEditUser({ ...user })
   }
 
-  // 预览二维码
+  // QR码预览
   const previewQRCode = (qrCode: any) => {
     setPreviewQR(qrCode)
     setShowPreview(true)
   }
 
-  // 生成二维码图片URL - 指向访客拨号页面
+  // 生成QR码图片URL - 指向访客电话页面
   const generateQRCodeImage = (qrCode: any) => {
-    // 生成完整的拨号URL，访客扫描后直接拨号
+    // 生成完整通话URL，访客扫码后直接拨打
     const baseUrl = window.location.origin
     const callUrl = `${baseUrl}/call/${qrCode.secure_code || qrCode.code}`
     return `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(callUrl)}`
@@ -153,7 +153,7 @@ export default function UsersManagePage() {
         .eq('id', editUser.id)
 
       if (error) {
-        console.error('更新用户错误:', error)
+        console.error('用户更新错误:', error)
         alert('更新失败: ' + error.message)
         return
       }
@@ -163,7 +163,7 @@ export default function UsersManagePage() {
       alert('用户更新成功！')
 
     } catch (err: any) {
-      console.error('更新用户异常:', err)
+      console.error('用户更新异常:', err)
       alert('更新失败: ' + err.message)
     }
   }
@@ -182,7 +182,7 @@ export default function UsersManagePage() {
 
   const handleLogout = () => {
     localStorage.removeItem('admin_logged_in')
-    navigate('/admin/login')
+    navigate('/admin@7@/login')
   }
 
   if (loading) {
@@ -190,7 +190,7 @@ export default function UsersManagePage() {
       <div className="min-h-screen bg-surface-near-black flex items-center justify-center">
         <div className="flex items-center gap-3">
           <RefreshCw className="w-6 h-6 text-primary-500 animate-spin" />
-          <span className="text-text-primary">加载用户数据中...</span>
+          <span className="text-text-primary">用户数据加载中...</span>
         </div>
       </div>
     )
@@ -205,7 +205,7 @@ export default function UsersManagePage() {
             <h1 className="text-xl font-semibold text-text-primary">管理后台</h1>
             <div className="flex items-center gap-4">
               <button
-                onClick={() => navigate('/admin/dashboard')}
+                onClick={() => navigate('/admin@7@/dashboard')}
                 className="text-text-secondary hover:text-text-primary transition-colors"
               >
                 返回仪表板
@@ -249,13 +249,13 @@ export default function UsersManagePage() {
           </div>
         )}
 
-        {/* 搜索栏 */}
+        {/* 搜索框 */}
         <div className="mb-6">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-text-secondary" />
             <input
               type="text"
-              placeholder="搜索手机号或二维码..."
+              placeholder="搜索电话号码或QR码..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full pl-10 pr-4 py-2 bg-surface-light-gray border border-white/20 rounded-md text-text-primary placeholder-text-secondary focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
@@ -269,7 +269,7 @@ export default function UsersManagePage() {
             <div className="p-8 text-center">
               <Users className="w-12 h-12 text-text-secondary mx-auto mb-4" />
               <p className="text-text-secondary">
-                {searchTerm ? '没有找到匹配的用户' : '暂无用户数据'}
+                {searchTerm ? '未找到匹配的用户' : '无用户数据'}
               </p>
             </div>
           ) : (
@@ -278,9 +278,9 @@ export default function UsersManagePage() {
                 <thead className="bg-surface-near-black">
                   <tr>
                     <th className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">用户ID</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">主要号码</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">主号码</th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">备用号码</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">关联二维码</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">关联QR码</th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">绑定时间</th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">状态</th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">操作</th>
@@ -318,7 +318,7 @@ export default function UsersManagePage() {
                           <button 
                             onClick={() => previewQRCode(user.qr_code)}
                             className="w-8 h-8 bg-primary-500 rounded flex items-center justify-center hover:bg-primary-400 transition-colors cursor-pointer"
-                            title="点击查看二维码详情"
+                            title="点击查看QR码详情"
                           >
                             <QrCode className="w-4 h-4 text-white" />
                           </button>
@@ -331,7 +331,7 @@ export default function UsersManagePage() {
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-text-secondary">
-                        {new Date(user.bound_at).toLocaleString('zh-CN')}
+                        {new Date(user.bound_at).toLocaleString('ko-KR')}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
@@ -398,12 +398,12 @@ export default function UsersManagePage() {
         </div>
       </div>
 
-      {/* 二维码预览模态框 */}
+      {/* QR码预览弹窗 */}
       {showPreview && previewQR && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="bg-surface-light-gray rounded-lg p-6 max-w-md w-full mx-4 border border-white/20">
             <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-semibold text-text-primary">二维码详情</h3>
+              <h3 className="text-lg font-semibold text-text-primary">QR码详情</h3>
               <button 
                 onClick={() => setShowPreview(false)}
                 className="text-text-secondary hover:text-text-primary"
@@ -420,13 +420,13 @@ export default function UsersManagePage() {
                   className="mx-auto border border-white/20 rounded"
                 />
                 <p className="text-sm text-text-secondary mt-2">
-                  访客扫描此二维码可直接拨号联系车主
+                  访客可以扫描此QR码直接致电车主
                 </p>
               </div>
               
               <div className="space-y-2">
                 <div className="flex justify-between">
-                  <span className="text-text-secondary">二维码代码:</span>
+                  <span className="text-text-secondary">QR码:</span>
                   <span className="text-text-primary font-mono">{previewQR.code}</span>
                 </div>
                 <div className="flex justify-between">
@@ -449,7 +449,7 @@ export default function UsersManagePage() {
         </div>
       )}
 
-      {/* 编辑用户模态框 */}
+      {/* 编辑用户弹窗 */}
       {editUser && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="bg-surface-light-gray rounded-lg p-6 max-w-md w-full mx-4 border border-white/20">
@@ -465,7 +465,7 @@ export default function UsersManagePage() {
             
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-text-secondary mb-2">主手机号</label>
+                <label className="block text-sm font-medium text-text-secondary mb-2">主手机号码</label>
                 <input
                   type="text"
                   value={editUser.phone1}
@@ -475,7 +475,7 @@ export default function UsersManagePage() {
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-text-secondary mb-2">备用手机号</label>
+                <label className="block text-sm font-medium text-text-secondary mb-2">备用手机号码</label>
                 <input
                   type="text"
                   value={editUser.phone2 || ''}
@@ -485,7 +485,7 @@ export default function UsersManagePage() {
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-text-secondary mb-2">二维码代码</label>
+                <label className="block text-sm font-medium text-text-secondary mb-2">QR码</label>
                 <input
                   type="text"
                   value={editUser.qr_code?.code || ''}

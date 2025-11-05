@@ -15,12 +15,12 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/call/:id" element={<CallPage />} />
         <Route path="/bind/:id" element={<BindPage />} />
-        <Route path="/admin" element={<AdminDashboardPage />} />
-        <Route path="/admin/login" element={<AdminLoginPage />} />
-        <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
-        <Route path="/admin/qrcodes" element={<QRManagePage />} />
-        <Route path="/admin/users" element={<UserManagePage />} />
-        <Route path="/admin/calls" element={<CallLogsPage />} />
+        <Route path="/admin@7@" element={<AdminDashboardPage />} />
+        <Route path="/admin@7@/login" element={<AdminLoginPage />} />
+        <Route path="/admin@7@/dashboard" element={<AdminDashboardPage />} />
+        <Route path="/admin@7@/qrcodes" element={<QRManagePage />} />
+        <Route path="/admin@7@/users" element={<UserManagePage />} />
+        <Route path="/admin@7@/calls" element={<CallLogsPage />} />
       </Routes>
     </Router>
   )
