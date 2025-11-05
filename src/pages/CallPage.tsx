@@ -55,7 +55,8 @@ export default function CallPage() {
           qr_code_id: 'demo',
           phone1: '01012345678',
           phone2: '01087654321',
-          management_password: 'demo123',
+          management_password: null,
+          bound_at: new Date().toISOString(),
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString()
         }

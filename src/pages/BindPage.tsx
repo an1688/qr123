@@ -31,16 +31,24 @@ export default function BindPage() {
   const { handleInput, handleDelete, handleFocus, handleEdit, handleSuccess } = useInputAudio()
 
   useEffect(() => {
+    console.log('=== BindPage useEffect 触发 ===')
+    console.log('id参数:', id)
+    console.log('当前路径:', window.location.pathname)
+    
     if (!id) {
+      console.log('id为空，跳转到首页')
       navigate('/')
       return
     }
+    
+    console.log('调用loadData函数')
     loadData()
   }, [id])
 
 
 
   async function loadData() {
+    console.log('=== loadData 函数开始执行 ===')
     try {
       setLoading(true)
       setError('')
@@ -54,13 +62,9 @@ export default function BindPage() {
       const isEditMode = urlParams.get('mode') === 'edit'
       console.log('编辑模式:', isEditMode)
 
-      // 处理二维码标识符 - 如果id是完整URL，提取标识符部分
-      let identifier = id
-      if (id && id.includes('/bind/')) {
-        // 从完整URL中提取标识符
-        identifier = id.split('/bind/')[1]?.split('?')[0]?.split('#')[0] || id
-        console.log('从URL中提取的标识符:', identifier)
-      }
+      // 处理二维码标识符 - 简化逻辑，直接使用id
+      const identifier = id || ''
+      console.log('处理的标识符:', identifier)
 
       // 演示模式处理 - 如果是demo123，直接进入演示模式
       if (identifier === 'demo123') {
@@ -71,16 +75,25 @@ export default function BindPage() {
           id: 'demo',
           code: 'demo123',
           secure_code: 'demo123',
-          status: 'unassigned',
+          status: 'unassigned' as const,
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString()
         }
         
+        console.log('设置模拟QR码数据:', mockQRCode)
         setQRCode(mockQRCode)
         
-        // 演示模式下直接显示设置界面
+        // 演示模式下直接显示设置界面 - 使用同步方式
+        console.log('设置showSetup为true')
         setShowSetup(true)
-        setLoading(false)
+        
+        // 强制重新渲染
+        setTimeout(() => {
+          console.log('设置loading为false')
+          setLoading(false)
+        }, 100)
+        
+        console.log('演示模式设置完成')
         return
       }
 

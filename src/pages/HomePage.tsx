@@ -4,96 +4,126 @@ import { usePageTitle } from '../hooks/usePageTitle'
 import { useState, useEffect } from 'react'
 
 export default function HomePage() {
-  usePageTitle('QR주차번호판 주차번호판')
+  usePageTitle('QR주차시스템 - 차주 연락 플랫폼')
   const [isVisible, setIsVisible] = useState(false)
 
   useEffect(() => {
     setIsVisible(true)
   }, [])
 
-  return (
-    <div className="min-h-screen relative overflow-hidden">
-      {/* Video Background Hero Section */}
-      <section className="relative h-screen flex items-center justify-center">
-        {/* Video Background */}
-        <div className="absolute inset-0 z-0">
-          <video
-            autoPlay
-            muted
-            loop
-            playsInline
-            className="w-full h-full object-cover"
-            poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1920 1080'%3E%3Cdefs%3E%3ClinearGradient id='grad' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%23000a14;stop-opacity:1'/%3E%3Cstop offset='50%25' style='stop-color:%23001f3f;stop-opacity:1'/%3E%3Cstop offset='100%25' style='stop-color:%23000a14;stop-opacity:1'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='1920' height='1080' fill='url(%23grad)'/%3E%3C/svg%3E"
-          >
-            <source src="https://t1.kakaocdn.net/kakaocorp/kakaocorp/service/main2025/pc_Loading_low.mp4" type="video/mp4" />
-          </video>
-          {/* Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-br from-black/70 via-black/50 to-black/70"></div>
-        </div>
+  // SEO优化的结构化数据
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    "name": "QR주차시스템",
+    "description": "QR코드로 차주에게 연락하는 혁신적인 주차 솔루션",
+    "provider": {
+      "@type": "Organization",
+      "name": "QR주차시스템",
+      "url": "https://qr-parking.com"
+    },
+    "serviceType": "주차 관리 서비스",
+    "areaServed": "대한민국",
+    "offers": [
+      {
+        "@type": "Offer",
+        "name": "기본 요금제",
+        "price": "0",
+        "priceCurrency": "KRW"
+      },
+      {
+        "@type": "Offer", 
+        "name": "프리미엄 요금제",
+        "price": "9900",
+        "priceCurrency": "KRW"
+      }
+    ]
+  }
 
-        {/* Hero Content */}
-        <div className={`relative z-10 text-center px-6 max-w-4xl mx-auto transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-          {/* Floating Logo */}
-          <div className="inline-flex items-center justify-center w-32 h-32 bg-gradient-to-br from-primary-500/20 to-primary-600/30 rounded-3xl mb-8 backdrop-blur-sm border border-white/10 animate-pulse">
-            <QrCode className="w-16 h-16 text-primary-400" />
+  return (
+    <>
+      {/* SEO优化的结构化数据 */}
+      <script type="application/ld+json">
+        {JSON.stringify(structuredData)}
+      </script>
+      
+      <div className="min-h-screen">
+        {/* SEO优化的Hero Section - 静态背景 */}
+        <section className="relative bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 min-h-screen flex items-center">
+          {/* 静态背景层 */}
+          <div className="absolute inset-0 bg-gradient-to-br from-black/70 via-black/50 to-black/70"></div>
+          
+          {/* 装饰性几何图形 - 不影响SEO */}
+          <div className="absolute inset-0 overflow-hidden">
+            <div className="absolute top-20 left-20 w-64 h-64 bg-primary-500/10 rounded-full blur-3xl"></div>
+            <div className="absolute bottom-20 right-20 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl"></div>
           </div>
-          
-          {/* Main Title with Animation */}
-          <h1 className="text-6xl md:text-8xl font-bold mb-6">
-            <span className="bg-gradient-to-r from-white via-blue-100 to-primary-200 bg-clip-text text-transparent">
-              QR주차
-            </span>
-            <br />
-            <span className="bg-gradient-to-r from-primary-400 via-blue-300 to-purple-300 bg-clip-text text-transparent">
-              주차번호판
-            </span>
-          </h1>
-          
-          {/* Subtitle */}
-          <p className="text-2xl md:text-3xl text-gray-200 mb-8 max-w-3xl mx-auto leading-relaxed">
-            QR코드로 차주에게 연락하기
-          </p>
-          
-          {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
-            <Link 
-              to="/call/demo123" 
-              className="group relative px-8 py-4 bg-gradient-to-r from-primary-500 to-primary-600 rounded-2xl font-semibold text-white overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-primary-500/25"
-            >
-              <span className="relative z-10 flex items-center gap-2">
-                지금 시작하기
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </span>
-              <div className="absolute inset-0 bg-gradient-to-r from-primary-600 to-primary-700 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-            </Link>
+
+          {/* Hero Content */}
+          <div className={`relative z-10 text-center px-6 max-w-4xl mx-auto transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+            {/* Logo */}
+            <div className="inline-flex items-center justify-center w-32 h-32 bg-gradient-to-br from-primary-500/20 to-primary-600/30 rounded-3xl mb-8 backdrop-blur-sm border border-white/10">
+              <QrCode className="w-16 h-16 text-primary-400" />
+            </div>
             
-            <Link 
-              to="/bind/demo123" 
-              className="group px-8 py-4 bg-white/10 backdrop-blur-md rounded-2xl font-semibold text-white border border-white/20 hover:bg-white/20 transition-all duration-300 hover:scale-105"
-            >
-              <span className="flex items-center gap-2">
-                차주 등록
-                <Sparkles className="w-5 h-5" />
+            {/* SEO优化的主标题 */}
+            <h1 className="text-5xl md:text-7xl font-bold mb-6">
+              <span className="bg-gradient-to-r from-white via-blue-100 to-primary-200 bg-clip-text text-transparent">
+                QR주차시스템
               </span>
-            </Link>
+            </h1>
+            
+            {/* 副标题 - SEO关键词优化 */}
+            <h2 className="text-2xl md:text-3xl text-gray-200 mb-4 max-w-3xl mx-auto leading-relaxed">
+              QR코드로 차주에게 연락하는 혁신적인 주차 솔루션
+            </h2>
+            
+            {/* 描述文本 - 增加关键词密度 */}
+            <div className="text-lg text-gray-300 mb-8 max-w-4xl mx-auto leading-relaxed">
+              <p className="mb-4">
+                차량번호판 QR코드를 통해 주차장阻塞, 상가 주차, 주차장 관리 등 다양한 상황에서 
+                차주와 즉시 연락할 수 있는 스마트한 주차 관리 시스템입니다.
+              </p>
+              <p className="text-base text-gray-400">
+                혁신적인 QR코드 기술로 아파트 주차장, 오피스텔 주차장, 상가 앞 주차구역에서 발생하는 
+                주차 갈등을 예방하고, 24시간 언제든지 차주에게 연락할 수 있어 효율적인 주차 관리를 실현합니다. 
+                개인정보 보호, 야광 QR코드, 이중번호 시스템으로 안전하고 편리한 주차 솔루션을 제공합니다.
+              </p>
+            </div>
+            
+            {/* CTA Buttons */}
+            <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
+              <Link 
+                to="/call/demo123" 
+                className="group relative px-8 py-4 bg-gradient-to-r from-primary-500 to-primary-600 rounded-2xl font-semibold text-white overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-primary-500/25"
+              >
+                <span className="relative z-10 flex items-center gap-2">
+                  지금 시작하기
+                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                </span>
+                <div className="absolute inset-0 bg-gradient-to-r from-primary-600 to-primary-700 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              </Link>
+              
+              <Link 
+                to="/bind/demo123" 
+                className="group px-8 py-4 bg-white/10 backdrop-blur-md rounded-2xl font-semibold text-white border border-white/20 hover:bg-white/20 transition-all duration-300 hover:scale-105"
+              >
+                <span className="flex items-center gap-2">
+                  차주 등록
+                  <Sparkles className="w-5 h-5" />
+                </span>
+              </Link>
+            </div>
           </div>
-        </div>
-        
-        {/* Scroll Indicator */}
-        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
-          <div className="w-6 h-10 border-2 border-white/30 rounded-full flex justify-center">
-            <div className="w-1 h-3 bg-white/50 rounded-full mt-2 animate-pulse"></div>
-          </div>
-        </div>
-      </section>
+        </section>
 
       {/* Content Sections */}
-      <div className="relative z-10 bg-gradient-to-b from-transparent via-slate-900/50 to-slate-900">
+      <div className="bg-gradient-to-b from-slate-900 to-slate-800">
         {/* Features Section */}
-        <section className="py-20 px-6">
+        <section className="py-20 px-6" aria-labelledby="features-heading">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-16">
-              <h2 className="text-4xl md:text-5xl font-bold mb-6">
+              <h2 id="features-heading" className="text-4xl md:text-5xl font-bold mb-6">
                 <span className="bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
                   제품 특징
                 </span>
@@ -148,10 +178,10 @@ export default function HomePage() {
         </section>
 
         {/* How it Works Section */}
-        <section className="py-20 px-6">
+        <section className="py-20 px-6" aria-labelledby="how-it-works-heading">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-16">
-              <h2 className="text-4xl md:text-5xl font-bold mb-6">
+              <h2 id="how-it-works-heading" className="text-4xl md:text-5xl font-bold mb-6">
                 <span className="bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
                   사용 방법
                 </span>
@@ -186,17 +216,28 @@ export default function HomePage() {
         </section>
 
         {/* Use Cases Section */}
-        <section className="py-20 px-6">
+        <section className="py-20 px-6" aria-labelledby="use-cases-heading">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-16">
-              <h2 className="text-4xl md:text-5xl font-bold mb-6">
+              <h2 id="use-cases-heading" className="text-4xl md:text-5xl font-bold mb-6">
                 <span className="bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
                   활용 사례
                 </span>
               </h2>
-              <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+              <p className="text-xl text-gray-300 max-w-3xl mx-auto mb-8">
                 다양한 상황에서 활용되는 QR주차시스템
               </p>
+              <div className="max-w-4xl mx-auto text-gray-300 leading-relaxed">
+                <p className="mb-4">
+                  QR주차시스템은 주차장阻塞, 상가 주차, 주차장 관리 등 다양한 주차 상황에서 발생하는 문제를 
+                  혁신적으로 해결하는 스마트한 솔루션입니다. 차량번호판에 부착된 QR코드를 통해 차주와 즉시 연락할 수 있어, 
+                  주차 갈등을 예방하고 원활한 주차 관리를 실현합니다.
+                </p>
+                <p>
+                  특히 아파트, 오피스텔, 상가, 개인 주차공간 등 다양한 환경에서 효과적으로 활용되며, 
+                  24시간 언제든지 차주에게 연락할 수 있어 긴급 상황 대응에도 탁월한 성능을 발휘합니다.
+                </p>
+              </div>
             </div>
             <div className="grid md:grid-cols-3 gap-8">
               {[
@@ -222,10 +263,10 @@ export default function HomePage() {
         </section>
 
         {/* Pricing Section */}
-        <section className="py-20 px-6">
+        <section className="py-20 px-6" aria-labelledby="pricing-heading">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-16">
-              <h2 className="text-4xl md:text-5xl font-bold mb-6">
+              <h2 id="pricing-heading" className="text-4xl md:text-5xl font-bold mb-6">
                 <span className="bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
                   요금제
                 </span>
@@ -301,11 +342,79 @@ export default function HomePage() {
           </div>
         </section>
 
+        {/* Detailed Service Introduction */}
+        <section className="py-20 px-6" aria-labelledby="service-intro-heading">
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-16">
+              <h2 id="service-intro-heading" className="text-4xl md:text-5xl font-bold mb-6">
+                <span className="bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
+                  QR주차시스템 상세 안내
+                </span>
+              </h2>
+            </div>
+            <div className="grid md:grid-cols-2 gap-12">
+              <div className="space-y-6">
+                <div>
+                  <h3 className="text-2xl font-bold text-white mb-4">QR코드 주차 시스템의 혁신</h3>
+                  <p className="text-gray-300 leading-relaxed mb-4">
+                    QR주차시스템은 전통적인 주차 관리 방식의 한계를 극복한 혁신적인 솔루션입니다. 
+                    차량번호판에 부착된 QR코드를 통해 방문객이나 관리자가 손쉽게 차주와 연락할 수 있어, 
+                    주차장阻塞 문제부터 상가 주차 관리까지 모든 주차 관련 문제를 효율적으로 해결합니다.
+                  </p>
+                  <p className="text-gray-300 leading-relaxed">
+                    특히 24시간 언제든지 접근 가능한 스마트한 시스템으로, 야간이나 긴급 상황에서도 
+                    신속하게 차주에게 연락할 수 있어 주차 갈등을 예방하고 원활한 주차 환경을 조성합니다.
+                  </p>
+                </div>
+                
+                <div>
+                  <h3 className="text-2xl font-bold text-white mb-4">개인정보 보호 및 보안</h3>
+                  <p className="text-gray-300 leading-relaxed mb-4">
+                    QR주차시스템은 개인정보보호법을 철저히 준수하며, 모든 개인정보는 SSL 암호화로 안전하게 보호됩니다. 
+                    연락처 정보는 QR코드를 스캔한 사람에게만 제한적으로 공개되어 개인정보 유출의 위험을 최소화합니다.
+                  </p>
+                  <p className="text-gray-300 leading-relaxed">
+                    또한 이중번호 시스템으로 인해 개인 연락처를 보호하면서도 효과적인 커뮤니케이션을 실현할 수 있어, 
+                   骚扰 문제 없이 안전한 주차 관리 서비스를 제공합니다.
+                  </p>
+                </div>
+              </div>
+              
+              <div className="space-y-6">
+                <div>
+                  <h3 className="text-2xl font-bold text-white mb-4">다양한 활용 분야</h3>
+                  <p className="text-gray-300 leading-relaxed mb-4">
+                    QR주차시스템은 아파트 주차장, 오피스텔 주차장, 상가 앞 주차구역, 개인 주차공간 등 
+                    다양한 환경에서 효과적으로 활용됩니다. 각 환경의 특성에 맞게 최적화된 솔루션을 제공하여, 
+                    모든 주차 상황에서 원활한 관리와 소통을 가능하게 합니다.
+                  </p>
+                  <p className="text-gray-300 leading-relaxed">
+                    특히 대규모 아파트 단지나 상업시설에서는 다수의 차량을 효율적으로 관리할 수 있어, 
+                    관리자의 부담을 크게减轻하면서도 주민이나 고객들의 만족도를 높일 수 있습니다.
+                  </p>
+                </div>
+                
+                <div>
+                  <h3 className="text-2xl font-bold text-white mb-4">기술적 우수성</h3>
+                  <p className="text-gray-300 leading-relaxed mb-4">
+                    야광 코팅이施된 QR코드로 제작되어 야간이나 어두운 곳에서도 선명하게 인식됩니다. 
+                    또한 반응형 웹 디자인으로 모바일 기기에서도 최적화된 사용자 경험을 제공합니다.
+                  </p>
+                  <p className="text-gray-300 leading-relaxed">
+                    클라우드 기반 인프라로 안정적인 서비스 운영을 보장하며, 실시간 데이터 동기화로 
+                    언제든지 최신 정보를 확인할 수 있어 신뢰할 수 있는 주차 관리 서비스를 제공합니다.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* FAQ Section */}
-        <section className="py-20 px-6">
+        <section className="py-20 px-6" aria-labelledby="faq-heading">
           <div className="max-w-4xl mx-auto">
             <div className="text-center mb-16">
-              <h2 className="text-4xl md:text-5xl font-bold mb-6">
+              <h2 id="faq-heading" className="text-4xl md:text-5xl font-bold mb-6">
                 <span className="bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
                   자주 묻는 질문
                 </span>
@@ -349,8 +458,9 @@ export default function HomePage() {
         </section>
 
         {/* Statistics Section */}
-        <section className="py-16 px-6">
+        <section className="py-16 px-6" aria-labelledby="stats-heading">
           <div className="max-w-4xl mx-auto">
+            <h2 id="stats-heading" className="sr-only">서비스 통계</h2>
             <div className="grid grid-cols-3 gap-8 text-center">
               <div className="group relative">
                 <div className="absolute inset-0 bg-gradient-to-br from-primary-500/20 to-primary-600/10 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-500"></div>
@@ -382,7 +492,80 @@ export default function HomePage() {
             </div>
           </div>
         </section>
+
+        {/* SEO优化的页脚内容 */}
+        <footer className="py-16 px-6 bg-slate-900">
+          <div className="max-w-4xl mx-auto text-center">
+            <h3 className="text-2xl font-bold text-white mb-6">QR주차시스템 소개</h3>
+            <div className="grid md:grid-cols-2 gap-8 text-left">
+              <div>
+                <h4 className="text-lg font-semibold text-primary-400 mb-3">서비스 특징</h4>
+                <ul className="space-y-2 text-gray-300">
+                  <li>• QR코드를 통한 차주 즉시 연락</li>
+                  <li>• 주차장阻塞 문제 해결</li>
+                  <li>• 상가 주차 관리 솔루션</li>
+                  <li>• 야광 QR코드로 24시간 서비스</li>
+                  <li>• 개인정보 보호 및 안전 관리</li>
+                </ul>
+              </div>
+              <div>
+                <h4 className="text-lg font-semibold text-primary-400 mb-3">활용 분야</h4>
+                <ul className="space-y-2 text-gray-300">
+                  <li>• 아파트 주차장 관리</li>
+                  <li>• 오피스텔 주차 시스템</li>
+                  <li>• 상가 앞 주차구역</li>
+                  <li>• 개인 주차 공간 관리</li>
+                  <li>• 긴급 주차 상황 대응</li>
+                </ul>
+              </div>
+            </div>
+            
+            {/* SEO关键词优化文本 */}
+            <div className="mt-12 p-6 bg-slate-800 rounded-lg">
+              <h4 className="text-lg font-semibold text-white mb-4">QR주차시스템 - 스마트 주차 솔루션</h4>
+              <div className="text-gray-300 leading-relaxed space-y-4">
+                <p>
+                  QR주차시스템은 혁신적인 QR코드 기술을 활용한 주차 관리 솔루션입니다. 차량번호판에 부착된 QR코드를 통해 
+                  주차장阻塞, 상가 주차, 주차장 관리 등 다양한 상황에서 차주와 즉시 연락할 수 있습니다. 
+                  개인정보 보호, 24시간 서비스, 야광 QR코드 등 안전하고 편리한 주차 관리 시스템을 제공합니다.
+                </p>
+                <p>
+                  특히 아파트 주차장, 오피스텔 주차장, 상가 앞 주차구역에서 발생하는 주차 갈등을 예방하고, 
+                  신속한 차량 이동으로 주차 효율성을 크게 향상시킬 수 있습니다. QR코드를 스캔하는 것만으로도 
+                  전화나 메시지로 차주에게 즉시 연락할 수 있어, 전통적인 주차 관리 방식의 한계를 극복한 
+                  스마트한 주차 솔루션입니다.
+                </p>
+                <p>
+                  기본 요금제는 무료로 제공되어 개인 사용자도 쉽게 이용하실 수 있으며, 프리미엄 요금제는 
+                  비즈니스 사용자를 위한 고급 기능과 통계, 우선 고객 지원을 제공합니다. 엔터프라이즈 요금제는 
+                  대규모 조직을 위한 맞춤형 솔루션으로 API 연동, 전담 고객 관리, 맞춤형 개발 서비스를 제공합니다.
+                </p>
+              </div>
+            </div>
+            
+            {/* 추가 SEO 콘텐츠 */}
+            <div className="mt-8 p-6 bg-slate-800 rounded-lg">
+              <h4 className="text-lg font-semibold text-white mb-4">주차장 관리의 새로운 패러다임</h4>
+              <div className="text-gray-300 leading-relaxed space-y-3">
+                <p>
+                  <strong>QR코드 주차:</strong> 차량번호판에 부착된 QR코드를 통해 차주에게 즉시 연락할 수 있는 혁신적인 주차 관리 시스템입니다.
+                </p>
+                <p>
+                  <strong>차량번호판 인식:</strong> 차량번호판에 부착된 QR코드를 인식하여 차주의 연락처 정보를 안전하게 관리합니다.
+                </p>
+                <p>
+                  <strong>주차 연락 서비스:</strong> 주차장阻塞, 상가 주차, 주차장 관리 등 다양한 상황에서 차주와 효과적으로 소통할 수 있습니다.
+                </p>
+                <p>
+                  <strong>차주 연락:</strong> 전화, SMS, 메시지 등 다양한 방식으로 차주에게 신속하고 정확한 연락을 취할 수 있습니다.
+                </p>
+                <p>
+                  <strong>QR주차 솔루션:</strong> 스마트한 주차 관리로 주차 갈등을 예방하고 효율적인 주차 환경을 조성하는 종합 솔루션입니다.
+                </p>
+              </div>
+            </div>
+          </div>
+        </footer>
       </div>
-    </div>
-  )
+    </>
 }

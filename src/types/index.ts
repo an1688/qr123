@@ -1,6 +1,7 @@
 export interface QRCode {
   id: string
   code: string
+  secure_code: string | null
   status: 'unassigned' | 'assigned' | 'disabled'
   created_at: string
   updated_at: string
