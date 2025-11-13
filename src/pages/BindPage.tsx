@@ -625,7 +625,7 @@ export default function BindPage() {
           {/* 页面头部 */}
           <div>
             <div className="flex items-center justify-center gap-3 mb-3">
-              <img src="/favicon-removebg-preview.png" alt="Logo" className="w-12 h-12 object-contain" />
+              <img src="/phone-call.svg" alt="Logo" className="w-12 h-12 object-contain" />
             </div>
             <h1 className="text-3xl md:text-4xl font-bold text-text-primary mb-3">
               환영합니다
