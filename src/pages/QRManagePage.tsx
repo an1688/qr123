@@ -98,6 +98,212 @@ export default function QRManagePage() {
     loadQRCodes()
   }, [])
 
+  // 创建结合电话图标的QR代码生成函数
+  const generateQRCodeWithPhoneIcon = async (qrContent: string): Promise<string | null> => {
+    try {
+      // 首先生成基础二维码数据URL（原始样式）
+      const baseQRUrl = await QRCode.toDataURL(qrContent, {
+        width: 320,  // 增加尺寸以容纳图标
+        margin: 4,   // 设置外边距为4个码点
+        color: {
+          dark: '#000000',
+          light: '#FFFFFF'
+        },
+        errorCorrectionLevel: 'H'  // 30%容错率
+      })
+
+      // 直接使用原始二维码，添加图标
+      return await createQRWithPhoneIcon(baseQRUrl)
+    } catch (error) {
+      console.error('QR代码生成失败:', error)
+      return null
+    }
+  }
+
+  // 应用条纹化效果到二维码
+  const applyStripeEffect = async (qrDataUrl: string): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const qrImage = new Image()
+      qrImage.onload = () => {
+        try {
+          const canvas = document.createElement('canvas')
+          canvas.width = qrImage.width
+          canvas.height = qrImage.height
+          const ctx = canvas.getContext('2d')
+          
+          if (!ctx) {
+            resolve(qrDataUrl)
+            return
+          }
+
+          // 绘制原始二维码
+          ctx.drawImage(qrImage, 0, 0)
+          
+          const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
+          const data = imageData.data
+          
+          // 获取二维码图像的尺寸和比例
+          const pixelSize = Math.max(2, Math.floor(canvas.width / 64))  // 估计的码点大小
+          
+          // 处理黑色像素，将其转换为条纹
+          for (let y = 0; y < canvas.height; y += pixelSize) {
+            for (let x = 0; x < canvas.width; x += pixelSize) {
+              let isBlackBlock = false
+              
+              // 检查这个区域是否主要是黑色
+              for (let dy = 0; dy < pixelSize && y + dy < canvas.height; dy++) {
+                for (let dx = 0; dx < pixelSize && x + dx < canvas.width; dx++) {
+                  const idx = ((y + dy) * canvas.width + (x + dx)) * 4
+                  if (data[idx] < 128) {  // 黑色像素
+                    isBlackBlock = true
+                    break
+                  }
+                }
+                if (isBlackBlock) break
+              }
+              
+              if (isBlackBlock) {
+                // 将黑色区域转换为条纹
+                for (let dy = 0; dy < pixelSize && y + dy < canvas.height; dy++) {
+                  for (let dx = 0; dx < pixelSize && x + dx < canvas.width; dx++) {
+                    const idx = ((y + dy) * canvas.width + (x + dx)) * 4
+                    
+                    // 创建简洁条纹效果：黑色条纹只占一小部分，大部分为白色
+                    if ((dy + x) % (pixelSize * 2) < pixelSize * 0.3) {
+                      data[idx] = 0      // 红色
+                      data[idx + 1] = 0  // 绿色
+                      data[idx + 2] = 0  // 蓝色
+                      data[idx + 3] = 255 // 透明度
+                    } else {
+                      // 其他区域设为白色（避免影响二维码结构）
+                      data[idx] = 255     // 红色
+                      data[idx + 1] = 255 // 绿色
+                      data[idx + 2] = 255 // 蓝色
+                      data[idx + 3] = 255 // 透明度
+                    }
+                  }
+                }
+              }
+            }
+          }
+          
+          // 将修改后的图像数据放回画布
+          ctx.putImageData(imageData, 0, 0)
+          
+          resolve(canvas.toDataURL('image/png'))
+        } catch (error) {
+          console.error('条纹化处理失败:', error)
+          resolve(qrDataUrl)  // 失败时返回原始二维码
+        }
+      }
+      
+      qrImage.onerror = () => {
+        resolve(qrDataUrl)  // 加载失败时返回原始二维码
+      }
+      
+      qrImage.src = qrDataUrl
+    })
+  }
+
+  // 在QR码上嵌入用户的电话图标
+  const createQRWithPhoneIcon = async (qrDataUrl: string): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      try {
+        console.log('开始创建带用户电话图标的QR码...')
+        const canvas = document.createElement('canvas')
+        const ctx = canvas.getContext('2d')
+        
+        if (!ctx) {
+          console.warn('无法创建Canvas上下文，返回原始QR码')
+          resolve(qrDataUrl)
+          return
+        }
+
+        // 加载用户的电话图标
+        const phoneIcon = new Image()
+        phoneIcon.onload = () => {
+          try {
+            console.log('用户电话图标加载成功，尺寸:', phoneIcon.width, 'x', phoneIcon.height)
+            const qrImage = new Image()
+            qrImage.onload = () => {
+              try {
+                console.log('QR码图像加载成功，尺寸:', qrImage.width, 'x', qrImage.height)
+                canvas.width = qrImage.width
+                canvas.height = qrImage.height
+                
+                // 绘制基础二维码
+                ctx.drawImage(qrImage, 0, 0)
+                console.log('已绘制基础QR码')
+                
+                // 计算图标中心位置和大小（7%尺寸确保扫描性）
+                const centerX = canvas.width / 2
+                const centerY = canvas.height / 2
+                const iconSize = Math.min(canvas.width, canvas.height) * 0.12  // 12%的尺寸，更大更明显
+                
+                console.log('嵌入用户电话图标，尺寸:', iconSize)
+                
+                // 计算图标的位置（居中）
+                const iconX = centerX - iconSize / 2
+                const iconY = centerY - iconSize / 2
+                
+                // 绘制白色背景（无阴影）
+                const bgPadding = iconSize * 0.25  // 更大的背景边距
+                const bgSize = iconSize + bgPadding * 2
+                const bgX = centerX - bgSize / 2
+                const bgY = centerY - bgSize / 2
+                
+                // 保存当前状态
+                ctx.save()
+                
+                // 绘制白色背景（带圆角）
+                ctx.fillStyle = '#FFFFFF'
+                
+                // 绘制圆角矩形背景
+                const radius = bgSize * 0.2
+                ctx.beginPath()
+                ctx.roundRect(bgX, bgY, bgSize, bgSize, radius)
+                ctx.fill()
+                
+                // 恢复原始状态
+                ctx.restore()
+                
+                // 绘制用户电话图标
+                ctx.drawImage(phoneIcon, iconX, iconY, iconSize, iconSize)
+                
+                console.log('用户电话图标嵌入完成')
+                resolve(canvas.toDataURL('image/png'))
+              } catch (drawError) {
+                console.error('绘制图标时出错:', drawError)
+                resolve(qrDataUrl)  // 出错时返回原始QR码
+              }
+            }
+            
+            qrImage.onerror = (error) => {
+              console.error('QR码图像加载失败:', error)
+              resolve(qrDataUrl)  // 加载失败时返回原始QR码
+            }
+            
+            qrImage.src = qrDataUrl
+          } catch (iconError) {
+            console.error('加载图标时出错:', iconError)
+            resolve(qrDataUrl)  // 出错时返回原始QR码
+          }
+        }
+        
+        phoneIcon.onerror = (error) => {
+          console.error('用户电话图标加载失败:', error)
+          resolve(qrDataUrl)  // 加载失败时返回原始QR码
+        }
+        
+        // 使用用户提供的电话图标文件
+        phoneIcon.src = '/favicon-removebg-preview.png'
+      } catch (error) {
+        console.error('创建Canvas时出错:', error)
+        resolve(qrDataUrl)  // 出错时返回原始QR码
+      }
+    })
+  }
+
   // 生成QR代码图像
   const generateQRCode = async (code: string, secureCode?: string) => {
     try {
@@ -106,20 +312,15 @@ export default function QRManagePage() {
       const identifier = secureCode || code
       const qrContent = `${baseUrl}/bind/${identifier}`
       
-      const qrDataUrl = await QRCode.toDataURL(qrContent, {
-        width: 256,
-        margin: 2,
-        color: {
-          dark: '#000000',
-          light: '#FFFFFF'
-        }
-      })
-      return qrDataUrl
+      // 使用新的电话图标结合生成方式
+      return await generateQRCodeWithPhoneIcon(qrContent)
     } catch (error) {
       console.error('QR代码生成失败:', error)
       return null
     }
   }
+
+  // 移除了 addPhoneLogoToQR 函数 - 现在生成纯净的二维码
 
   // 处理复选框选择
   const handleSelectQR = (qrId: string) => {

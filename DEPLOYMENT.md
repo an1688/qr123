@@ -1,86 +1,50 @@
-# QR주차시스템 배포 가이드
+# KR010 QR停车系统部署说明
 
-## 🚀 Vercel 배포 방법
+## 项目简介
+KR010是一个智能QR停车系统，支持通过QR码快速联系车主。
 
-### 1. GitHub에 업로드
-```bash
-git init
-git add .
-git commit -m "Initial commit: QR주차시스템"
-git branch -M main
-git remote add origin https://github.com/YOUR_USERNAME/qr-parking-system.git
-git push -u origin main
+## 部署到Vercel步骤
+
+### 1. 上传到GitHub
+1. 在GitHub创建新仓库
+2. 将此文件夹内容上传到GitHub仓库
+
+### 2. 部署到Vercel
+1. 访问 [vercel.com](https://vercel.com)
+2. 使用GitHub账号登录
+3. 点击"New Project"
+4. 选择您的GitHub仓库
+5. 点击"Deploy"
+
+### 3. 环境变量配置
+在Vercel项目设置中配置以下环境变量：
+
+```env
+VITE_SUPABASE_URL=您的Supabase项目URL
+VITE_SUPABASE_ANON_KEY=您的Supabase匿名密钥
 ```
 
-### 2. Vercel에서 배포
-1. [Vercel](https://vercel.com)에 로그인
-2. "New Project" 클릭
-3. GitHub 리포지토리 선택
-4. 환경 변수 설정:
-   ```
-   VITE_SUPABASE_URL=your_supabase_project_url
-   VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
-   VITE_ADMIN_USERNAME=admin
-   VITE_ADMIN_PASSWORD=YourSecurePassword123!
-   ```
-5. "Deploy" 클릭
+### 4. 构建命令
+Vercel会自动检测到这是一个Vite项目，会使用以下构建配置：
+- Build Command: `pnpm install --prefer-offline && rm -rf node_modules/.vite-temp && tsc -b && vite build`
+- Output Directory: `dist`
+- Install Command: `pnpm install --prefer-offline`
 
-### 3. 환경 변수 설정
-프로덕션 환경에서는 다음 환경 변수를 설정해야 합니다:
+## 项目特点
+- 基于React + TypeScript + Vite
+- 使用Tailwind CSS进行样式设计
+- 集成Supabase作为后端服务
+- 支持响应式设计
+- 支持路由导航
 
-- `VITE_SUPABASE_URL`: Supabase 프로젝트 URL
-- `VITE_SUPABASE_ANON_KEY`: Supabase Anonymous Key
-- `VITE_ADMIN_USERNAME`: 관리자 사용자명
-- `VITE_ADMIN_PASSWORD`: 관리자 비밀번호
-- `VITE_SESSION_TIMEOUT`: 세션 타임아웃 (기본값: 1800000ms)
-- `VITE_MAX_LOGIN_ATTEMPTS`: 최대 로그인 시도 횟수 (기본값: 5)
-- `VITE_LOCKOUT_DURATION`: 계정 잠금 시간 (기본값: 900000ms)
+## 技术栈
+- 前端：React 18, TypeScript, Vite
+- 样式：Tailwind CSS
+- 后端：Supabase
+- 图标：Lucide React
+- 路由：React Router v6
 
-## 🛠️ 로컬 개발
-
-### 의존성 설치
-```bash
-npm install
-# 또는
-pnpm install
-```
-
-### 개발 서버 실행
-```bash
-npm run dev
-# 또는
-pnpm dev
-```
-
-### 프로덕션 빌드
-```bash
-npm run build
-# 또는
-pnpm build
-```
-
-## 📋 요구사항
-
-- Node.js 18+ 
-- npm 또는 pnpm
-- Supabase 계정 및 프로젝트
-
-## 🔧 기술 스택
-
-- **Frontend**: React 18 + TypeScript
-- **Build Tool**: Vite
-- **UI**: Radix UI + Tailwind CSS
-- **Backend**: Supabase
-- **Routing**: React Router v6
-
-## 📱 주요 기능
-
-- QR코드를 통한 차주 즉시 연락
-- 주차장阻塞 문제 해결
-- 상가 주차 관리 솔루션
-- 야광 QR코드로 24시간 서비스
-- 개인정보 보호 및 안전 관리
-
-## 📞 지원
-
-배포过程中에 문제가 발생하면 GitHub Issues를 통해 문의해 주세요.
+## 注意事项
+1. 确保在部署前配置好Supabase环境变量
+2. 检查所有外部服务依赖
+3. 确保网站可以在本地正常运行
