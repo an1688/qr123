@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useParams, useNavigate, useLocation } from 'react-router-dom'
-import { Check, AlertCircle } from 'lucide-react'
+import { Phone, Check, AlertCircle } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 import type { QRCode, PhoneBinding } from '../types'
 import { useInputAudio } from '../hooks/useAudio'
