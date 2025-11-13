@@ -254,7 +254,7 @@ export default function CallPage() {
         {/* 紧凑的页面头部 */}
         <div className="text-center mb-4">
           <div className="flex items-center justify-center gap-2 mb-2">
-            <Phone className="w-6 h-6 text-primary-500" />
+            <img src="/phone-call.svg" alt="Logo" className="w-12 h-12 object-contain" />
             <h1 className="text-2xl font-bold text-text-primary">
               차주 연락하기
             </h1>
