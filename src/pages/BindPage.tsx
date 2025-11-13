@@ -667,7 +667,7 @@ export default function BindPage() {
         {/* 页面头部 */}
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-3 mb-3">
-            <Phone className="w-10 h-10 text-primary-500" />
+             <img src="/phone-call.svg" alt="Logo" className="w-12 h-12 object-contain" />
             <h1 className="text-3xl md:text-4xl font-bold text-text-primary">
               {existingBinding ? '연락처 업데이트' : '연락처 연결'}
             </h1>
